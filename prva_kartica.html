@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SFT21 - Odluka o nastavku poslovanja</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arial&family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Stilovi ostaju isti */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .header-banner {
+            background-color: #6A0DAD;
+            color: #FFFF00;
+            width: 100%;
+            padding: 15px 0;
+            text-align: center;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .close-button {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            color: #FFFFFF;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .close-button:hover {
+            color: #f0f0f0;
+        }
+        .content-wrapper {
+            background-color: #FFFFFF;
+            width: 100%;
+            max-width: 900px;
+            margin: 20px;
+            padding: clamp(15px, 3vw, 30px);
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+            line-height: 1.6;
+            padding-bottom: clamp(15px, 3vw, 30px);
+        }
+        h2 {
+            color: #D6336C;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+        }
+        p {
+            margin-bottom: 1em;
+            color: #4A0072;
+        }
+        strong, b {
+            color: #3B005A;
+        }
+        .highlight-red {
+            color: #D6336C;
+            font-weight: bold;
+        }
+        .sf-bodovi-star {
+            color: #6A0DAD;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+        .footer-note {
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        .main-greeting {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: clamp(1rem, 2vw, 1.3rem);
+        }
+        .info-block {
+            margin-bottom: 15px;
+        }
+        .info-block p {
+             margin-bottom: 0.5em;
+        }
+        .decision-text {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .user-requested-style-center-red {
+            text-align: center !important;
+            color: red !important;
+        }
+        .user-requested-style-center-red strong,
+        .user-requested-style-center-red b {
+            color: red !important;
+        }
+        .user-requested-style-justify {
+            text-align: justify !important;
+        }
+
+        #confirmSelectionButton {
+            margin: 20px auto;
+            display: block;
+            max-width: fit-content;
+            padding: 1.2rem 2.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.3rem;
+            white-space: nowrap;
+            background-color: #C20000;
+            color: #FFFFFF;
+            border: 1px solid transparent;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 0 20px rgba(194, 0, 0, 0.3);
+        }
+
+        #confirmSelectionButton:hover {
+            background-color: #9C0000;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3), 0 0 30px rgba(194, 0, 0, 0.5);
+        }
+
+        @media (max-width: 600px) {
+            #confirmSelectionButton {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+        
+        /* STILOVI ZA POPUP/MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            color: #333;
+            padding: 30px;
+            border: 1px solid #888;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: fadeIn 0.3s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-close-button {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .modal-close-button:hover,
+        .modal-close-button:focus {
+            color: #000;
+            text-decoration: none;
+        }
+        .modal-content h2 {
+            color: #6A0DAD;
+            text-align: left;
+            margin-top: 20px;
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+        .modal-content h2:first-of-type {
+            margin-top: 0;
+        }
+        .modal-content input[type="text"],
+        .modal-content input[type="email"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        .modal-content .email-subtitle {
+            margin-top: 5px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #555;
+            text-align: left;
+        }
+        .modal-content .napomena {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #444;
+            text-align: left;
+        }
+        .modal-content .napomena p {
+            color: #444;
+            margin-top: 5px;
+            margin-bottom: 0;
+            text-align: justify;
+        }
+        .modal-content .napomena strong {
+             color: #333;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.8rem;
+            height: 1.2em;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .input-error {
+            border-color: red !important;
+            box-shadow: 0 0 5px rgba(255,0,0,0.5);
+        }
+        /* Stil za novi gumb u pop-upu */
+        .modal-confirm-button {
+            display: block;
+            margin: 25px auto 0; /* Centriranje s gornjom marginom */
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #FFFFFF;
+            background-color: #007BFF; /* Plava boja za potvrdu */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .modal-confirm-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="header-banner">
+        SFT21 – Odluka o nastavku poslovanja
+        <button class="close-button" id="closePageButton" title="Zatvori">X</button>
+    </div>
+
+    <div class="content-wrapper">
+        <p class="main-greeting">ČESTITAMO I ZAHVALJUJEMO VAM SE NA ODLUCI DA NAM SE PRIDRUŽITE U NASTAVKU POSLOVANJA SUKLADNO PRAVILIMA NOVOG POSLOVNOG SISTEMA</p>
+        <div class="info-block">
+            <p class="user-requested-style-center-red">S obzirom na promjene u načinu poslovanja i raspodjeli sredstava, <br>Franšizni ugovor kojega ste prethodno potpisali prestaje važiti.</p>
+            <p class="user-requested-style-center-red">Novi Franšizni ugovor potpisujete nakon aktivacije novog Startnog paketa.</p>
+        </div>
+        <p class="decision-text user-requested-style-center-red" id="dynamicDecisionText">
+            S obzirom da ste u starom sistemu započeli poslovanje sa <strong id="dynamicStartPackageInfo">30 $</strong> te kako ste odlučili da;
+        </p>
+        <h2 class="highlight-red user-requested-style-center-red">↪ NE ŽELITE ulagati u Investicijski paket...</h2>
+        <p id="dynamicContinuationInfo" class="user-requested-style-justify">... poslovanje nastavljate kao <strong>AKTIVAN</strong> član, (<strong>SFstarter</strong> - ako imate manje od 1450 SFbodova odnosno <strong>SFfranšizer</strong> - ako imate više od 1450 SFbodova), otvaranjem <strong>osobnog (OR)</strong> ili <strong>poslovnog (PR)</strong> korisničkog računa sa "<strong>SPfree</strong>" startnim paketom.</p>
+        <p id="dynamicPaymentSFbInfoContainer" class="user-requested-style-justify">Kod prvog popunjavanja pozicija u SFalgoritmu vaš će račun zauzeti poziciju sukladno broju vaših <strong>osobnih</strong> odnosno <strong>grupnih SFbodova</strong> iz starog sistema. <span id="dynamicOldSystemPaymentInfo">Na osnovi uplate <strong>30 $</strong> za Startni paket iz starog sistema dobivate <strong>60 osobnih SFbodova</strong> koji vam se prenose u novi sistem.</span></p>
+        <p class="user-requested-style-justify"><span class="sf-bodovi-star">❖</span> <strong>Grupne SFbodove</strong> dobivate tako što će se Vašem broju osobnih SFbodova pridodati zbroj osobnih bodova vaših direktnih i indirektnih članova, koji isto tako nastavljaju poslovanje. Sukladno tome, vašem broju SFbodova dodaje se 50% ukupnog zbroja osobnih SFbodova vaših direktnih članova i 25% ukupnog zbroja osobnih SFbodova njihovih direktnih članova (vaši indirektni članovi). Ukoliko ste u starom sistemu ostvarili nadogradnju računa, ostvarena zarada iz rezervnog novčanika pridodaje se vašem broju SFbodova, na način da za svaki 1 SFC dobivate 1 SFb. Ako ste imali određeni iznos SFC u novčaniku taj vam se iznos također ubraja u broj vaših SFbodova, s time da za svaki 1 SFC dobivate 2 SFb.</p>
+        <p class="user-requested-style-justify" id="dynamicLmzText"><span class="sf-bodovi-star">❖</span> <strong>Limit maksimalne zarade (LMZ)</strong> koji možete dobiti u jednom obračunskom periodu biti će vam određen prema broju SFbodova.</p>
+        <p class="footer-note user-requested-style-justify" id="dynamicFooterNote">Nakon zauzimanja pozicije vašeg računa u SFalgoritmu, nastavljate sukladno novim pravilima poslovanja sa "SPfree" startnim paketom uz novo određeni LMZ, koji možete povećavati (do max. 2100 SFC) uplatom novih pretplatničkih perioda ili izgradnjom karijere registracijom novih članova – SFfranšizera (do max. 100.000 SFC).</p>
+        <button id="confirmSelectionButton">POTVRDI ODABIR</button>
+    </div>
+
+    <!-- HTML STRUKTURA ZA POPUP -->
+    <div id="confirmationPopup" class="modal-overlay">
+        <div class="modal-content">
+            <span id="closePopupButton" class="modal-close-button" title="Zatvori i vrati se na odabir">×</span>
+            
+            <h2>UPIŠI KORISNIČKO IME</h2>
+            <input type="text" id="usernameInput" maxlength="21" placeholder="Vaše korisničko ime iz starog sistema">
+    
+            <h2>UPIŠI EMAIL ADRESU</h2>
+            <p class="email-subtitle">(sa kojom ste se registrirali u starom sistemu)</p>
+            <input type="email" id="oldEmailInput" placeholder="Stara email adresa">
+            <div id="oldEmailError" class="error-message"></div>
+    
+            <p class="email-subtitle">Ukoliko više ne koristite istu adresu ili joj nemate pristup upišite novu email adresu.</p>
+            <input type="email" id="newEmailInput" placeholder="Nova email adresa (opcionalno)">
+            <div id="newEmailError" class="error-message"></div>
+    
+            <div class="napomena">
+                <strong>Napomena:</strong>
+                <!-- IZMIJENJENI TEKST PREMA ZAHTJEVU -->
+                <p>Sa prvim popunjavanjem SFalgoritma započeti će nastavak poslovanja o čemu ćete biti 
+                pravovremeno obaviješteni putem email adrese.
+                Ukoliko naknadno odlučite iskoristiti priliku ulaganja u razvoj SFT21 Business Concepta,
+                to uvijek možete na stranici Investicijskih paketa, sve dok ponuda traje.</p>
+            </div>
+
+            <!-- NOVI GUMB ZA POTVRDU -->
+            <button id="popupConfirmButton" class="modal-confirm-button">Potvrdi</button>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paramIznos = urlParams.get('iznos');
+            const paramValuta = urlParams.get('valuta');
+
+            // --- Postojeća logika za dinamički sadržaj stranice ---
+            // (Ovaj kod ostaje nepromijenjen)
+            // ...
+            console.log("--- SCRIPT START (prva_kartica.html) ---");
+            console.log("Primljeni URL parametri:");
+            console.log("iznos:", paramIznos);
+            console.log("valuta:", paramValuta);
+
+            const startPackageInfoSpan = document.getElementById('dynamicStartPackageInfo');
+            const decisionTextParagraph = document.getElementById('dynamicDecisionText');
+            const continuationInfoParagraph = document.getElementById('dynamicContinuationInfo');
+            const paymentSFbInfoContainerParagraph = document.getElementById('dynamicPaymentSFbInfoContainer');
+            const oldSystemPaymentInfoSpan = document.getElementById('dynamicOldSystemPaymentInfo');
+            const lmzTextParagraph = document.getElementById('dynamicLmzText');
+            const footerNoteParagraph = document.getElementById('dynamicFooterNote');
+            
+            const defaultDecisionTextStart = "S obzirom da ste u starom sistemu započeli poslovanje sa ";
+            const defaultDecisionTextEnd = " te kako ste odlučili da;";
+            const defaultStartPackageDisplay = "30 $";
+            const defaultContinuationText = `... poslovanje nastavljate kao <strong>AKTIVAN</strong> član, (<strong>SFstarter</strong> - ako imate manje od 1450 SFbodova odnosno <strong>SFfranšizer</strong> - ako imate više od 1450 SFbodova), otvaranjem <strong>osobnog (OR)</strong> ili <strong>poslovnog (PR)</strong> korisničkog računa sa "<strong>SPfree</strong>" startnim paketom.`;
+            const defaultOldSystemPaymentText = `Na osnovi uplate <strong>30 $</strong> za Startni paket iz starog sistema dobivate <strong>60 osobnih SFbodova</strong> koji vam se prenose u novi sistem.`;
+            const defaultLmzText = `<span class="sf-bodovi-star">❖</span> <strong>Limit maksimalne zarade (LMZ)</strong> koji možete dobiti u jednom obračunskom periodu biti će vam određen prema broju SFbodova.`;
+            const defaultFooterNoteText = `Nakon zauzimanja pozicije vašeg računa u SFalgoritmu, nastavljate sukladno novim pravilima poslovanja sa "SPfree" startnim paketom uz novo određeni LMZ, koji možete povećavati (do max. 2100 SFC) uplatom novih pretplatničkih perioda ili izgradnjom karijere registracijom novih članova – SFfranšizera (do max. 100.000 SFC).`;
+
+            if (decisionTextParagraph) {
+                decisionTextParagraph.innerHTML = `${defaultDecisionTextStart}<strong>${defaultStartPackageDisplay}</strong>${defaultDecisionTextEnd}`;
+            } else if (startPackageInfoSpan) {
+                startPackageInfoSpan.textContent = defaultStartPackageDisplay;
+            }
+            if (continuationInfoParagraph) continuationInfoParagraph.innerHTML = defaultContinuationText;
+            if (oldSystemPaymentInfoSpan) {
+                oldSystemPaymentInfoSpan.innerHTML = defaultOldSystemPaymentText;
+            } else if (paymentSFbInfoContainerParagraph) {
+                 paymentSFbInfoContainerParagraph.innerHTML = `Kod prvog popunjavanja pozicija u SFalgoritmu vaš će račun zauzeti poziciju sukladno broju vaših <strong>osobnih</strong> odnosno <strong>grupnih SFbodova</strong> iz starog sistema. ${defaultOldSystemPaymentText}`;
+            }
+            if (lmzTextParagraph) lmzTextParagraph.innerHTML = defaultLmzText;
+            if (footerNoteParagraph) footerNoteParagraph.innerHTML = defaultFooterNoteText;
+
+            if (paramIznos && paramValuta) {
+                console.log("Parametri 'iznos' i 'valuta' postoje.");
+                const isVeciIznos = paramIznos === 'veci' && paramValuta === 'iznos';
+                const is1955USD = paramIznos === '1955' && (paramValuta.toLowerCase() === 'usd' || paramValuta === '$');
+                const is2710EUR = paramIznos === '2710' && (paramValuta === '€' || paramValuta.toLowerCase() === 'eur');
+                const is1325EUR = paramIznos === '1325' && (paramValuta.toLowerCase() === 'eur' || paramValuta === '€');
+                const is955USD = paramIznos === '955' && (paramValuta.toLowerCase() === 'usd' || paramValuta === '$');
+
+                let currentDisplayText = "";
+                let currentSfBodovi = 0;
+                
+                if (isVeciIznos) {
+                    console.log("ULAZIM U BLOK: isVeciIznos (prva_kartica.html)");
+                    if (decisionTextParagraph) decisionTextParagraph.innerHTML = `S obzirom da ste u starom sistemu započeli poslovanje sa <strong>investicijom većeg iznosa</strong>, te kako ste odlučili da;`;
+                    if (continuationInfoParagraph) continuationInfoParagraph.innerHTML = `... poslovanje nastavljate kao <strong>AKTIVAN</strong> član, (<strong>SFfranšizer</strong>), otvaranjem više (max. 5) osobnih računa (OR) ili jednim osobnim i jednim poslovnim (PR) računom sa ”<strong>SPfree</strong>” startnim paketom.`;
+                    if (paymentSFbInfoContainerParagraph) paymentSFbInfoContainerParagraph.innerHTML = `Svi vaši računi će kod prvog popunjavanja pozicija u SFalgoritmu zauzeti pozicije sukladno broju vaših <strong>osobnih</strong> odnosno <strong>grupnih SFbodova</strong> iz starog sistema. Na osnovi uplate Startnog paketa i investicije većg iznosa iz starog sistema dobivate u novom sistemu <strong>2900 osobnih SFbodova</strong> na svakom novo otvorenom računu.`;
+                    if (lmzTextParagraph) lmzTextParagraph.innerHTML = `<span class="sf-bodovi-star">❖</span> <strong>Limit maksimalne zarade (LMZ)</strong> koji možete dobiti u jednom obračunskom periodu na svakom vašem računu iznosi <strong>2100 SFC</strong>.`;
+                    if (footerNoteParagraph) footerNoteParagraph.innerHTML = `Svi vaši računi u SFalgoritmu zauzimaju zaključane pozicije (zaredom, jedna do druge), te nastavljate sukladno novim pravilima poslovanja sa "SPfree" startnim paketom uz novo određeni LMZ (2100 SFC), koji naknadno možete povećavati isključivo izgradnjom karijere registracijom novih članova – SFfranšizera (do max. 100.000 SFC).`;
+                } else if (is1955USD) {
+                     console.log("ULAZIM U BLOK: is1955USD (prva_kartica.html)");
+                    currentDisplayText = '1955 $';
+                    if (decisionTextParagraph) decisionTextParagraph.innerHTML = `${defaultDecisionTextStart}<strong>${currentDisplayText}</strong>${defaultDecisionTextEnd}`;
+                    else if (startPackageInfoSpan) startPackageInfoSpan.textContent = currentDisplayText;
+                    if (continuationInfoParagraph) continuationInfoParagraph.innerHTML = `... poslovanje nastavljate kao <strong>AKTIVAN</strong> član, (<strong>SFfranšizer</strong>), otvaranjem dva (2) osobna računa (OR) ili jednim osobnim i jednim poslovnim (PR) računom sa ”<strong>SPfree</strong>” startnim paketima.`;
+                    if (paymentSFbInfoContainerParagraph) paymentSFbInfoContainerParagraph.innerHTML = `Oba će računa kod prvog popunjavanja pozicija u SFalgoritmu zauzeti pozicije u SFalgoritmu sukladno broju vaših <strong>osobnih</strong> odnosno <strong>grupnih SFbodova</strong> iz starog sistema. Na osnovi uplate <strong>${currentDisplayText}</strong> za Startni paket iz starog sistema dobivate u novom sistemu <strong>2900 osobnih SFbodova</strong> na prvom računu i <strong>1010 osobnih SFbodova</strong> na drugom računu.`;
+                    if (lmzTextParagraph) lmzTextParagraph.innerHTML = `<span class="sf-bodovi-star">❖</span> <strong>Limit maksimalne zarade</strong> koji možete dobiti u jednom obračunskom periodu na prvom računu iznosi vam <strong>2100 SFC</strong>, dok vam je na drugom računu limit maksimalne zarade <strong>1010 SFC</strong>.`;
+                    if (footerNoteParagraph) footerNoteParagraph.innerHTML = `Navedeni limit na prvom računu možete povečavati izgradnjom karijere registracijom novih članova – SFfranšizera, dok na drugom računu limit možete povećavati dodatnim uplatama novih pretplatničkih perioda ili izgradnjom karijere registracijom novih članova – SFfranšizera (do max. 100.000 SFC).`;
+                } else if (is2710EUR) {
+                     console.log("ULAZIM U BLOK: is2710EUR (prva_kartica.html)");
+                    currentDisplayText = '2710 €';
+                    if (decisionTextParagraph) decisionTextParagraph.innerHTML = `${defaultDecisionTextStart}<strong>${currentDisplayText}</strong>${defaultDecisionTextEnd}`;
+                    else if (startPackageInfoSpan) startPackageInfoSpan.textContent = currentDisplayText;
+                    if (continuationInfoParagraph) continuationInfoParagraph.innerHTML = `... poslovanje nastavljate kao <strong>AKTIVAN</strong> član, (<strong>SFfranšizer</strong>), otvaranjem dva (2) osobna računa (OR) ili jednim osobnim i jednim poslovnim (PR) računom sa ”<strong>SPfree</strong>” startnim paketima.`;
+                    if (paymentSFbInfoContainerParagraph) paymentSFbInfoContainerParagraph.innerHTML = `Oba će računa kod prvog popunjavanja pozicija u SFalgoritmu zauzeti pozicije u SFalgoritmu sukladno broju vaših <strong>osobnih</strong> odnosno <strong>grupnih SFbodova</strong> iz starog sistema. Na osnovi uplate <strong>${currentDisplayText}</strong> za Startni paket iz starog sistema dobivate u novom sistemu <strong>2900 osobnih SFbodova</strong> na prvom računu i <strong>2520 osobnih SFbodova</strong> na drugom računu.`;
+                    if (lmzTextParagraph) lmzTextParagraph.innerHTML = `<span class="sf-bodovi-star">❖</span> <strong>Limit maksimalne zarade</strong> koji možete dobiti u jednom obračunskom periodu na prvom računu iznosi vam <strong>2100 SFC</strong>, dok vam je na drugom računu limit maksimalne zarade <strong>1260 SFC</strong>.`;
+                    if (footerNoteParagraph) footerNoteParagraph.innerHTML = `Navedeni limit na prvom računu možete povečavati izgradnjom karijere registracijom novih članova – SFfranšizera, dok na drugom računu limit možete povećavati dodatnim uplatama novih pretplatničkih perioda ili izgradnjom karijere registracijom novih članova – SFfranšizera (do max. 100.000 SFC).`;
+                } else if (is1325EUR) {
+                    console.log("ULAZIM U BLOK: is1325EUR (prva_kartica.html)");
+                    currentDisplayText = '1325 €';
+                    currentSfBodovi = 1325 * 2;
+                    if (decisionTextParagraph) decisionTextParagraph.innerHTML = `${defaultDecisionTextStart}<strong>${currentDisplayText}</strong>${defaultDecisionTextEnd}`;
+                    else if (startPackageInfoSpan) startPackageInfoSpan.textContent = currentDisplayText;
+                    if (continuationInfoParagraph) continuationInfoParagraph.innerHTML = `... poslovanje nastavljate kao <strong>AKTIVAN</strong> član <strong>SFfranšizer</strong>, otvaranjem <strong>osobnog (OR)</strong> ili <strong>poslovnog (PR)</strong> korisničkog računa sa "<strong>SPfree</strong>" startnim paketom.`;
+                    if (oldSystemPaymentInfoSpan) oldSystemPaymentInfoSpan.innerHTML = `Na osnovi uplate <strong>${currentDisplayText}</strong> za Startni paket iz starog sistema dobivate <strong>${currentSfBodovi} osobnih SFbodova</strong> koji vam se prenose u novi sistem.`;
+                    else if (paymentSFbInfoContainerParagraph) paymentSFbInfoContainerParagraph.innerHTML = `Kod prvog popunjavanja pozicija u SFalgoritmu vaš će račun zauzeti poziciju sukladno broju vaših <strong>osobnih</strong> odnosno <strong>grupnih SFbodova</strong> iz starog sistema. Na osnovi uplate <strong>${currentDisplayText}</strong> za Startni paket iz starog sistema dobivate <strong>${currentSfBodovi} osobnih SFbodova</strong> koji vam se prenose u novi sistem.`;
+                    if (lmzTextParagraph) lmzTextParagraph.innerHTML = `<span class="sf-bodovi-star">❖</span> <strong>Limit maksimalne zarade (LMZ)</strong> koji možete dobiti u jednom obračunskom periodu iznosi vam <strong>2100 SFC</strong>.`;
+                    if (footerNoteParagraph) footerNoteParagraph.innerHTML = `Nakon zauzimanja pozicije vašeg računa u SFalgoritmu, nastavljate sukladno novim pravilima poslovanja sa ”SPfree” startnim paketom uz novo određeni LMZ, koji možete povećavati isključivo izgradnjom karijere registracijom novih članova – SFfranšizera (do max. 100.000 SFC).`;
+                } else if (is955USD) {
+                    console.log("ULAZIM U BLOK: is955USD (prva_kartica.html)");
+                    currentDisplayText = '955 $';
+                    currentSfBodovi = 955 * 2;
+                    if (decisionTextParagraph) decisionTextParagraph.innerHTML = `${defaultDecisionTextStart}<strong>${currentDisplayText}</strong>${defaultDecisionTextEnd}`;
+                    if (continuationInfoParagraph) continuationInfoParagraph.innerHTML = `...poslovanje nastavljate kao <strong>AKTIVAN</strong> član <strong>SFfranšizer</strong>, otvaranjem <strong>osobnog (OR)</strong> ili <strong>poslovnog (PR)</strong> korisničkog računa sa "<strong>SPfree</strong>" startnim paketom.`;
+                    if (paymentSFbInfoContainerParagraph) paymentSFbInfoContainerParagraph.innerHTML = `Kod prvog popunjavanja pozicija u SFalgoritmu vaš će račun zauzeti poziciju sukladno broju vaših <strong>osobnih</strong> odnosno <strong>grupnih SFbodova</strong> iz starog sistema. Na osnovi uplate <strong>${currentDisplayText}</strong> za Startni paket iz starog sistema dobivate <strong>${currentSfBodovi} osobnih SFbodova</strong> koji vam se prenose u novi sistem.`;
+                    if (lmzTextParagraph) lmzTextParagraph.innerHTML = `<span class="sf-bodovi-star">❖</span> <strong>Limit maksimalne zarade (LMZ)</strong> koji možete dobiti u jednom obračunskom periodu biti će vam određen prema broju SFbodova. S obzirom na trenutni broj vaših osobnih SFbodova (1910) osigurani LMZ vam je 1900 SFC.`;
+                    if (footerNoteParagraph) footerNoteParagraph.innerHTML = `Nakon zauzimanja pozicije vašeg računa u SFalgoritmu, nastavljate sukladno novim pravilima poslovanja sa "SPfree" startnim paketom uz novo određeni LMZ, koji možete povećavati do max. 2100 SFC, jednokratnom uplatom drugog startnog paketa (SP2) vrijednosti 200 €, sa kojim ujedno dobivate dodatnih 400 SFbdova ili uplatom četiri pretplatnička perioda na rate (4 x 50) čime dobivate dodatnih 200 SFbodova. Osim navedenog LMZ možete povećavati izgradnjom karijere registracijom novih članova – SFfranšizera, od 2.200 SFC za najmanji (Srebro) do 100.000 SFC za najveći (SFT Dijamant) karijerni status.`;
+                } else { 
+                    console.log("ULAZIM U BLOK: Općeniti numerički iznos (prva_kartica.html)");
+                    const numericIznos = parseFloat(paramIznos);
+                    let currencySymbol = paramValuta;
+                    if (paramValuta.toLowerCase() === 'usd' || paramValuta === '$') currencySymbol = '$';
+                    else if (paramValuta === '€' || paramValuta.toLowerCase() === 'eur') currencySymbol = '€';
+                    currentDisplayText = `${paramIznos} ${currencySymbol}`;
+                    if (!isNaN(numericIznos)) currentSfBodovi = numericIznos * 2;
+                    else { currentDisplayText = defaultStartPackageDisplay; currentSfBodovi = 60; }
+                    if (decisionTextParagraph) decisionTextParagraph.innerHTML = `${defaultDecisionTextStart}<strong>${currentDisplayText}</strong>${defaultDecisionTextEnd}`;
+                    else if (startPackageInfoSpan) startPackageInfoSpan.textContent = currentDisplayText;
+                    if (oldSystemPaymentInfoSpan) oldSystemPaymentInfoSpan.innerHTML = `Na osnovi uplate <strong>${currentDisplayText}</strong> za Startni paket iz starog sistema dobivate <strong>${currentSfBodovi} osobnih SFbodova</strong> koji vam se prenose u novi sistem.`;
+                    if (continuationInfoParagraph) continuationInfoParagraph.innerHTML = defaultContinuationText;
+                    if (lmzTextParagraph) lmzTextParagraph.innerHTML = defaultLmzText;
+                    if (footerNoteParagraph) footerNoteParagraph.innerHTML = defaultFooterNoteText;
+                }
+            } else { 
+                console.log("Parametri 'iznos' i/ili 'valuta' NE POSTOJE. Koriste se defaultne vrijednosti.");
+            }
+
+            const closeButton = document.getElementById('closePageButton');
+            if (closeButton) {
+                closeButton.addEventListener('click', () => {
+                    const finalIznos = paramIznos || '30';
+                    const finalValuta = paramValuta || 'usd';
+                    window.location.href = `prikaz_opcije.html?iznos=${encodeURIComponent(finalIznos)}&valuta=${encodeURIComponent(finalValuta)}`;
+                });
+            }
+
+            // --- SKRIPTA ZA UPRAVLJANJE POPUP-om ---
+
+            const confirmSelectionButton = document.getElementById('confirmSelectionButton');
+            const popup = document.getElementById('confirmationPopup');
+            const closePopupButton = document.getElementById('closePopupButton');
+            
+            const usernameInput = document.getElementById('usernameInput');
+            const oldEmailInput = document.getElementById('oldEmailInput');
+            const oldEmailError = document.getElementById('oldEmailError');
+            const newEmailInput = document.getElementById('newEmailInput');
+            const newEmailError = document.getElementById('newEmailError');
+            
+            // NOVI ELEMENT GUMB
+            const popupConfirmButton = document.getElementById('popupConfirmButton');
+
+            function validateEmail(email) {
+                const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                return re.test(String(email).toLowerCase());
+            }
+
+            function handleValidation(inputElement, errorElement) {
+                const email = inputElement.value;
+                if (email && !validateEmail(email)) {
+                    errorElement.textContent = 'Format email adrese nije ispravan.';
+                    inputElement.classList.add('input-error');
+                } else {
+                    errorElement.textContent = '';
+                    inputElement.classList.remove('input-error');
+                }
+            }
+            
+            if (oldEmailInput && oldEmailError) oldEmailInput.addEventListener('blur', () => handleValidation(oldEmailInput, oldEmailError));
+            if (newEmailInput && newEmailError) newEmailInput.addEventListener('blur', () => handleValidation(newEmailInput, newEmailError));
+
+            if (confirmSelectionButton && popup) {
+                confirmSelectionButton.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    popup.style.display = 'flex';
+                });
+            }
+
+            if (closePopupButton) {
+                closePopupButton.addEventListener('click', () => {
+                    window.location.href = 'odluka.html';
+                });
+            }
+            
+            // --- LOGIKA ZA NOVI "POTVRDI" GUMB ---
+            if (popupConfirmButton) {
+                popupConfirmButton.addEventListener('click', () => {
+                    const username = usernameInput.value.trim();
+                    const oldEmail = oldEmailInput.value.trim();
+                    
+                    const isUsernameValid = username !== '';
+                    const isEmailValid = oldEmail !== '' && validateEmail(oldEmail);
+
+                    // Ukloni stare greške prije provjere
+                    usernameInput.classList.remove('input-error');
+                    oldEmailInput.classList.remove('input-error');
+
+                    // Provjera
+                    if (isUsernameValid && isEmailValid) {
+                        // Sve je u redu, preusmjeri
+                        window.location.href = 'odluka.html';
+                    } else {
+                        // Ako nešto nije u redu, prikaži upozorenje i označi polja
+                        if (!isUsernameValid) {
+                            usernameInput.classList.add('input-error');
+                        }
+                        if (!isEmailValid) {
+                            oldEmailInput.classList.add('input-error');
+                        }
+                        alert('Molimo ispravno ispunite polja za korisničko ime i email adresu.');
+                    }
+                });
+            }
+            
+            console.log("--- SCRIPT END (prva_kartica.html) ---");
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SFT21 - Poslovni Sistem</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&family=Arial+Narrow&family=Anton&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            background: linear-gradient(135deg, #6A0DAD 0%, #4A0072 50%, #D6336C 100%);
+            color: #FFFFFF;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-family: 'Stardos Stencil', cursive;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            color: #FFFF00;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: clamp(1rem, 2.5vw, 1.5rem);
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .navigation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            max-width: 1400px;
+            width: 100%;
+            margin-bottom: 40px;
+        }
+
+        .nav-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.4s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .nav-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .nav-card:hover::before {
+            left: 100%;
+        }
+
+        .nav-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            border-color: #FFFF00;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-card i {
+            font-size: 3rem;
+            color: #FFFF00;
+            margin-bottom: 20px;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-card:hover i {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .nav-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #FFFFFF;
+            font-weight: bold;
+        }
+
+        .nav-card p {
+            font-size: 1rem;
+            opacity: 0.85;
+            line-height: 1.5;
+        }
+
+        .video-info-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            max-width: 900px;
+            width: 100%;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .video-info-section h2 {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            color: #FFFF00;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .video-info-section p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .video-download-btn {
+            display: inline-block;
+            background: linear-gradient(45deg, #D6336C, #6A0DAD);
+            color: #FFFFFF;
+            padding: 15px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            margin: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .video-download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            background: linear-gradient(45deg, #E6447C, #7A1DBD);
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: auto;
+            padding-top: 30px;
+            opacity: 0.8;
+        }
+
+        .footer p {
+            font-size: 0.9rem;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .navigation-grid {
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        .video-info-section {
+            animation: fadeInUp 1s ease-out 0.6s both;
+        }
+
+        @media (max-width: 768px) {
+            .navigation-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .nav-card {
+                padding: 25px;
+            }
+            
+            .video-info-section {
+                padding: 25px;
+            }
+
+            .nav-card i {
+                font-size: 2.5rem;
+            }
+
+            .nav-card h3 {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .nav-card {
+                padding: 20px;
+            }
+
+            .video-info-section {
+                padding: 20px;
+            }
+
+            .video-download-btn {
+                padding: 12px 24px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>SFT21</h1>
+        <p>Poslovni Sistem - Navigacija</p>
+    </div>
+
+    <div class="navigation-grid">
+        <div class="nav-card" onclick="window.open('inpack.html', '_blank')">
+            <i class="fas fa-box-open"></i>
+            <h3>Investicijski Paketi</h3>
+            <p>Glavna stranica s investicijskim paketima i opcijama za ulaganje</p>
+        </div>
+
+        <div class="nav-card" onclick="window.open('odluka.html', '_blank')">
+            <i class="fas fa-clipboard-check"></i>
+            <h3>Odluka</h3>
+            <p>Stranica za donošenje važnih poslovnih odluka</p>
+        </div>
+
+        <div class="nav-card" onclick="window.open('izbor.html', '_blank')">
+            <i class="fas fa-hand-pointer"></i>
+            <h3>Izbor Opcija</h3>
+            <p>Stranica za izbor između različitih poslovnih opcija</p>
+        </div>
+
+        <div class="nav-card" onclick="window.open('prikaz_opcije.html', '_blank')">
+            <i class="fas fa-eye"></i>
+            <h3>Prikaz Opcija</h3>
+            <p>Detaljni prikaz i analiza dostupnih opcija</p>
+        </div>
+
+        <div class="nav-card" onclick="window.open('prva_kartica.html', '_blank')">
+            <i class="fas fa-play-circle"></i>
+            <h3>Prva Kartica</h3>
+            <p>Početna kartica s osnovnim informacijama</p>
+        </div>
+
+        <div class="nav-card" onclick="window.open('druga_kartica.html', '_blank')">
+            <i class="fas fa-forward"></i>
+            <h3>Druga Kartica</h3>
+            <p>Nastavak informacija i dodatne opcije</p>
+        </div>
+
+        <div class="nav-card" onclick="window.open('treca_kartica.html', '_blank')">
+            <i class="fas fa-fast-forward"></i>
+            <h3>Treća Kartica</h3>
+            <p>Dodatne informacije i napredne mogućnosti</p>
+        </div>
+
+        <div class="nav-card" onclick="window.open('cetvrta_kartica.html', '_blank')">
+            <i class="fas fa-step-forward"></i>
+            <h3>Četvrta Kartica</h3>
+            <p>Napredne opcije i detaljne postavke</p>
+        </div>
+
+        <div class="nav-card" onclick="window.open('peta_kartica.html', '_blank')">
+            <i class="fas fa-flag-checkered"></i>
+            <h3>Peta Kartica</h3>
+            <p>Završne informacije i finalne potvrde</p>
+        </div>
+    </div>
+
+    <div class="video-info-section">
+        <h2><i class="fas fa-video"></i> SFT21 Business Concept Video</h2>
+        <p>
+            Zbog GitHub ograničenja veličine datoteka (25MB), video prezentacija nije uključena u ovu verziju.
+            Video možete preuzeti iz kompletne ZIP arhive ili ga hostovati na vanjskim platformama.
+        </p>
+        <p>
+            <strong>Preporučena rješenja za video:</strong>
+        </p>
+        <a href="#" class="video-download-btn" onclick="alert('Preuzmite kompletnu ZIP arhivu s video datotekom')">
+            <i class="fas fa-download"></i> Preuzmi Kompletnu Verziju
+        </a>
+        <a href="https://youtube.com" target="_blank" class="video-download-btn">
+            <i class="fab fa-youtube"></i> Upload na YouTube
+        </a>
+        <a href="https://vimeo.com" target="_blank" class="video-download-btn">
+            <i class="fab fa-vimeo"></i> Upload na Vimeo
+        </a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 SFT21 Poslovni Sistem. Sva prava zadržana.</p>
+    </div>
+
+    <script>
+        // Dodaj smooth scroll efekt i animacije
+        document.addEventListener('DOMContentLoaded', function() {
+            // Animacija za kartice
+            const cards = document.querySelectorAll('.nav-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${0.9 + index * 0.1}s`;
+                card.style.animation = 'fadeInUp 0.6s ease-out both';
+            });
+
+            // Dodaj napredne hover efekte
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-10px) scale(1.03)';
+                    this.style.boxShadow = '0 20px 50px rgba(0,0,0,0.4)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                    this.style.boxShadow = '0 8px 32px rgba(0,0,0,0.1)';
+                });
+
+                // Dodaj click efekt
+                card.addEventListener('mousedown', function() {
+                    this.style.transform = 'translateY(-8px) scale(0.98)';
+                });
+
+                card.addEventListener('mouseup', function() {
+                    this.style.transform = 'translateY(-10px) scale(1.03)';
+                });
+            });
+
+            // Dodaj parallax efekt za pozadinu
+            window.addEventListener('scroll', function() {
+                const scrolled = window.pageYOffset;
+                const parallax = document.body;
+                const speed = scrolled * 0.5;
+                parallax.style.backgroundPosition = `center ${speed}px`;
+            });
+        });
+
+        // Dodaj keyboard navigaciju
+        document.addEventListener('keydown', function(e) {
+            const cards = document.querySelectorAll('.nav-card');
+            let currentIndex = -1;
+            
+            // Pronađi trenutno fokusiranu karticu
+            cards.forEach((card, index) => {
+                if (document.activeElement === card) {
+                    currentIndex = index;
+                }
+            });
+
+            // Navigacija strelicama
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                const nextIndex = (currentIndex + 1) % cards.length;
+                cards[nextIndex].focus();
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const prevIndex = currentIndex === -1 ? cards.length - 1 : (currentIndex - 1 + cards.length) % cards.length;
+                cards[prevIndex].focus();
+            } else if (e.key === 'Enter' && currentIndex !== -1) {
+                e.preventDefault();
+                cards[currentIndex].click();
+            }
+        });
+
+        // Dodaj tabindex za accessibility
+        document.querySelectorAll('.nav-card').forEach((card, index) => {
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('role', 'button');
+            card.setAttribute('aria-label', `Otvori ${card.querySelector('h3').textContent}`);
+        });
+    </script>
+</body>
+</html>
+

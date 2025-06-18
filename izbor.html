@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SFT21 - Izbor Opcije</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&family=Arial+Narrow&family=Anton&family=Georgia&display=swap" rel="stylesheet">
+    <style>
+        /* Globalni stilovi i reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { 
+            width: 100%; 
+            height: 100%; 
+            overflow-x: hidden; 
+            overflow-y: auto;
+            background-color: #FFFFFF; 
+            color: #333333; 
+            font-family: 'Arial Narrow', Arial, sans-serif; 
+            cursor: none; 
+            position: relative; 
+        }
+
+        .cursor-dot, .cursor-dot-outline { 
+            pointer-events: none; 
+            position: fixed; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            border-radius: 50%; 
+            z-index: 10001; 
+            opacity: 0; 
+            transition: opacity 0.3s ease-in-out; 
+        }
+        .cursor-dot { 
+            width: 8px; 
+            height: 8px; 
+            background-color: #A020F0; 
+            transition: transform 0.1s ease-out, background-color 0.2s ease; 
+        }
+        .cursor-dot-outline { 
+            width: 30px; 
+            height: 30px; 
+            background-color: rgba(160, 32, 240, 0.2); 
+            transition: transform 0.2s ease-out, background-color 0.2s ease, width 0.2s ease, height 0.2s ease; 
+        }
+        body:hover .cursor-dot, body:hover .cursor-dot-outline { 
+            opacity: 1; 
+        }
+
+        .page-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh; 
+            padding: 20px;
+            padding-top: 0; 
+            position: relative;
+        }
+
+        .close-button-page {
+            position: absolute;
+            top: clamp(15px, 3vh, 25px);
+            right: clamp(15px, 3vw, 30px);
+            background: transparent;
+            border: none;
+            font-family: 'Arial', sans-serif;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            font-weight: bold;
+            color: #FFFF00; 
+            cursor: none; 
+            padding: 5px;
+            line-height: 1;
+            transition: color 0.2s ease, transform 0.2s ease;
+            z-index: 100; 
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+        .close-button-page:hover {
+            color: #FFFFA0; 
+            transform: scale(1.1);
+        }
+
+        .header-bar {
+            background-color: #7A23C2; 
+            color: #FFFF00; 
+            padding: clamp(15px, 3vh, 25px) 0;
+            width: 100%;
+            text-align: center;
+            margin-bottom: clamp(20px, 4vh, 40px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+        }
+        .header-bar h1 {
+            font-family: 'Anton', sans-serif; 
+            font-size: clamp(1.6rem, 5vw, 2.8rem);
+            margin: 0;
+            font-weight: 400; 
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.7), 2px 2px 3px rgba(0,0,0,0.5);
+            letter-spacing: 1px;
+        }
+
+        .instruction-text {
+            font-family: 'Georgia', serif; 
+            color: #E50000; 
+            font-size: clamp(1.1rem, 2.8vw, 1.7rem);
+            text-align: center;
+            margin-bottom: clamp(25px, 5vh, 45px);
+            line-height: 1.6;
+            max-width: 900px; 
+            font-weight: bold;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); 
+            gap: clamp(10px, 2vw, 20px);
+            width: 100%;
+            max-width: 1000px; 
+            padding: 0 clamp(10px, 3vw, 20px); 
+            margin-bottom: 30px; 
+        }
+        
+        @media (min-width: 880px) { 
+            .options-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+        }
+         @media (max-width: 400px) { 
+            .options-grid {
+                grid-template-columns: repeat(2, 1fr);
+                 max-width: 350px;
+            }
+        }
+
+        .option-button {
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            background: linear-gradient(145deg, #8c43ee, #701ebd); 
+            color: #FFFFFF;
+            border: 1px solid #500099; 
+            padding: clamp(10px, 2.2vh, 16px) 10px; 
+            font-size: clamp(0.9rem, 2vw, 1.3rem); 
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: none; 
+            transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-align: center;
+            box-shadow: 0 3px 5px rgba(0,0,0,0.3), 
+                        inset 0 1px 1px rgba(255,255,255,0.1),
+                        inset 0 -1px 1px rgba(0,0,0,0.1);
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+        }
+        .option-button:hover {
+            background: linear-gradient(145deg, #9d5cfc, #802ac4); 
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 6px 12px rgba(138, 43, 226, 0.4),
+                        inset 0 1px 1px rgba(255,255,255,0.2),
+                        inset 0 -2px 2px rgba(0,0,0,0.15);
+        }
+        .option-button:active {
+            transform: translateY(-1px) scale(1.01);
+            background: linear-gradient(145deg, #701ebd, #5c189c);
+        }
+        
+        .options-grid-wrapper {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .options-grid-wrapper::before {
+            content: "SFT21";
+            font-family: 'Stardos Stencil', cursive; 
+            font-size: clamp(10rem, 30vw, 20rem); 
+            color: rgba(138, 43, 226, 0.06); 
+            position: absolute;
+            top: 45%; 
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-5deg); 
+            z-index: -1; 
+            pointer-events: none; 
+        }
+        .options-grid-wrapper::after {
+            content: "BUSINESS CONCEPT";
+            font-family: 'Arial', sans-serif; 
+            font-weight: bold;
+            font-size: clamp(2rem, 6vw, 3.5rem); 
+            color: rgba(138, 43, 226, 0.07); 
+            position: absolute;
+            top: 58%; 
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-5deg); 
+            z-index: -1;
+            pointer-events: none;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 480px) {
+            .close-button-page { top: 10px; right: 10px; font-size: 1.6rem; }
+            .header-bar h1 { font-size: clamp(1.4rem, 6vw, 2rem); }
+            .instruction-text { font-size: clamp(0.9rem, 4vw, 1.3rem); }
+            .options-grid { gap: 10px; }
+            .option-button { font-size: clamp(0.9rem, 3vw, 1.1rem); padding: 10px 8px; }
+            .options-grid-wrapper::before { font-size: clamp(6rem, 20vw, 12rem); top: 48%;} 
+            .options-grid-wrapper::after { font-size: clamp(1.5rem, 4vw, 2.5rem); top: 60%;}
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor-dot-outline"></div>
+    <div class="cursor-dot"></div>
+
+    <div class="page-container">
+        <button class="close-button-page" id="closePageButton" title="Povratak na odluku">×</button>
+        <header class="header-bar">
+            <h1>SFT21 Business Concept– Odluka o nastavku poslovanja</h1>
+        </header>
+
+        <p class="instruction-text">
+            KAKO BI DONIJELI ODLUKU O TOME DA LI ŽELITE<br>
+            ODUSTATI ILI NASTAVITI POSLOVANJE<br>
+            KLIKOM NA DUGME ISPOD IZABERITE IZNOS<br>
+            SA KOJIM STE ZAPOČELI POSLOVANJE U STAROM SISTEMU
+        </p>
+        
+        <div class="options-grid-wrapper">
+            <div class="options-grid">
+                <!-- Gumbi sada samo imaju data-value, target-page je uklonjen jer se generira dinamički -->
+                <button class="option-button" data-value="30_usd">30 $</button>
+                <button class="option-button" data-value="42_eur">42 €</button>
+                <button class="option-button" data-value="55_usd">55 $</button>
+                <button class="option-button" data-value="77_eur">77 €</button>
+                <button class="option-button" data-value="105_usd">105 $</button>
+                
+                <button class="option-button" data-value="145_eur">145 €</button>
+                <button class="option-button" data-value="205_usd">205 $</button>
+                <button class="option-button" data-value="285_eur">285 €</button>
+                <button class="option-button" data-value="455_usd">455 $</button>
+                <button class="option-button" data-value="630_eur">630 €</button>
+                
+                <button class="option-button" data-value="955_usd">955 $</button>
+                <button class="option-button" data-value="1325_eur">1325 €</button>
+                <button class="option-button" data-value="1955_usd">1955 $</button>
+                <button class="option-button" data-value="2710_eur">2710 €</button>
+                <button class="option-button" data-value="veci_iznos">Veći iznos</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cursorDot = document.querySelector(".cursor-dot");
+            const cursorDotOutline = document.querySelector(".cursor-dot-outline");
+            
+            function updateInteractiveElements() {
+                const interactiveElements = document.querySelectorAll('button, a, [data-interactive]');
+                interactiveElements.forEach(el => {
+                    el.removeEventListener('mouseenter', handleMouseEnter);
+                    el.removeEventListener('mouseleave', handleMouseLeave);
+                    el.addEventListener('mouseenter', handleMouseEnter);
+                    el.addEventListener('mouseleave', handleMouseLeave);
+                });
+            }
+
+            function handleMouseEnter() {
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                cursorDot.style.backgroundColor = '#BF5FFF';
+                cursorDotOutline.style.transform = 'translate(-50%, -50%) scale(1.6)';
+                cursorDotOutline.style.backgroundColor = 'rgba(191, 95, 255, 0.3)';
+                cursorDotOutline.style.width = '35px';
+                cursorDotOutline.style.height = '35px';
+            }
+
+            function handleMouseLeave() {
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursorDot.style.backgroundColor = '#A020F0';
+                cursorDotOutline.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursorDotOutline.style.backgroundColor = 'rgba(160, 32, 240, 0.2)';
+                cursorDotOutline.style.width = '30px';
+                cursorDotOutline.style.height = '30px';
+            }
+
+            window.addEventListener("mousemove", function (e) {
+                const posX = e.clientX;
+                const posY = e.clientY;
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
+                cursorDotOutline.animate(
+                    { left: `${posX}px`, top: `${posY}px` }, 
+                    { duration: 400, fill: "forwards", easing: "ease-out" }
+                );
+            });
+            
+            const closePageButton = document.getElementById('closePageButton');
+            if (closePageButton) { 
+                closePageButton.addEventListener('click', () => {
+                    window.location.href = 'odluka.html'; 
+                });
+            }
+
+            updateInteractiveElements(); 
+
+            // *** POČETAK IZMIJENJENOG KODA ZA GUMBE S OPCIJAMA ***
+            const optionButtons = document.querySelectorAll('.option-button');
+            optionButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const value = button.dataset.value; // npr. "30_usd", "42_eur", "veci_iznos"
+                    let iznosParam = '';
+                    let valutaParam = '';
+                    const templatePage = 'prikaz_opcije.html'; // Ciljana template stranica
+
+                    if (value === 'veci_iznos') {
+                        iznosParam = 'veci'; 
+                        valutaParam = 'iznos';
+                    } else {
+                        const parts = value.split('_'); 
+                        if (parts.length === 2) {
+                            iznosParam = parts[0];
+                            valutaParam = parts[1].toLowerCase(); 
+                        }
+                    }
+
+                    if (iznosParam && valutaParam) {
+                        window.location.href = `${templatePage}?iznos=${iznosParam}&valuta=${valutaParam}`;
+                    } else {
+                        alert(`Odabrali ste: ${button.textContent} (Problem s konfiguracijom)`); 
+                        console.error(`Problem s data-value: ${value} za gumb ${button.textContent}`);
+                    }
+                });
+            });
+            // *** KRAJ IZMIJENJENOG KODA ZA GUMBE S OPCIJAMA ***
+        });
+    </script>
+</body>
+</html>

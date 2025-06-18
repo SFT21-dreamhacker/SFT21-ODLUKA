@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poslovni Projekt - Odluka</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&family=Arial+Narrow&family=Anton&display=swap" rel="stylesheet">
+    <style>
+        /* Globalni stilovi i reset */
+        .page-title {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(2rem, 4vw, 2.55rem);
+            color: #6A0DAD;
+            text-align: center;
+            margin-bottom: clamp(15px, 2.5vh, 30px);
+            letter-spacing: 3px;
+            font-weight: 400;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: #FFFFFF;
+            color: #333333;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            cursor: none;
+            position: relative;
+        }
+
+        /* Jedinstveni kursor */
+        .cursor-dot, .cursor-dot-outline {
+            pointer-events: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 10011; /* Povećan z-index da bude iznad video modala */
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #A020F0;
+            transition: transform 0.1s ease-out, background-color 0.2s ease;
+        }
+        .cursor-dot-outline {
+            width: 30px;
+            height: 30px;
+            background-color: rgba(160, 32, 240, 0.2);
+            transition: transform 0.2s ease-out, background-color 0.2s ease, width 0.2s ease, height 0.2s ease;
+        }
+        body:hover .cursor-dot, body:hover .cursor-dot-outline {
+            opacity: 1;
+        }
+        /* Ovaj CSS blok se ne bi trebao aktivirati ako ne koristimo klasu 'system-cursor-active' u JS-u za video */
+        body.system-cursor-active .cursor-dot,
+        body.system-cursor-active .cursor-dot-outline {
+            opacity: 0 !important;
+        }
+        /* Standardni kursor vidljiv kada je video modal aktivan */
+        body.system-cursor-active {
+            cursor: auto !important;
+        }
+
+
+        /* Slajdovi */
+        .slide { width: 100%; height: 100%; position: absolute; top: 0; left: 0; display: flex; opacity: 0; visibility: hidden; align-items: center; justify-content: center; flex-direction: column; text-align: center; padding: 20px; transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.8s cubic-bezier(0.4, 0, 0.2, 1); z-index: 1; }
+        .slide.active { opacity: 1; visibility: visible; z-index: 2; }
+
+        /* Prva stranica (Slide 0) */
+        #slide0 .content-wrapper { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; width: 100%; position: relative; z-index: 5; }
+        .main-content-area {
+            border: 3px solid #A080C0;
+            padding: clamp(20px, 4vw, 40px) clamp(30px, 6vw, 60px);
+            display: inline-block;
+            margin-bottom: clamp(30px, 5vh, 60px);
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.15), 0 0 8px rgba(0, 0, 0, 0.1);
+            background: rgba(245, 240, 255, 0.6);
+            border-radius: 8px;
+         }
+        .logo-container { text-align: center; }
+        .logo-text {
+            font-family: 'Stencil';
+            font-weight: 700;
+            font-size: clamp(3.5rem, 16vw, 11rem);
+            color: #4A0072;
+            line-height: 0.95;
+            margin: 0;
+            text-shadow: 1px 1px 0px rgba(220, 150, 255, 0.5), 2px 2px 3px rgba(0,0,0,0.1);
+        }
+        .logo-subtext {
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: clamp(1.3rem, 4.0vw, 2.5rem);
+            color: #6A0DAD;
+            text-transform: uppercase;
+            letter-spacing: clamp(5px, 1.2vw, 10px);
+            margin-top: clamp(8px, 1.8vh, 18px);
+            font-weight: 400;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        .decision-button {
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            padding: clamp(12px, 2vh, 18px) clamp(25px, 4vw, 40px);
+            font-size: clamp(1rem, 2vw, 1.4rem);
+            color: #4A0072;
+            background: rgba(160, 32, 240, 0.1);
+            border: 1px solid rgba(138, 43, 226, 0.4);
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            cursor: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.1), 0 0 15px rgba(138, 43, 226, 0.05), inset 0 0 5px rgba(220, 150, 255, 0.2);
+            animation: pulseButtonLight 2.5s infinite ease-in-out;
+        }
+         @keyframes pulseButtonLight {
+             0% { transform: scale(1); box-shadow: 0 0 10px rgba(138, 43, 226, 0.1), 0 0 15px rgba(138, 43, 226, 0.05), inset 0 0 5px rgba(220, 150, 255, 0.2); }
+             50% { transform: scale(1.03); box-shadow: 0 0 15px rgba(160, 32, 240, 0.2), 0 0 25px rgba(160, 32, 240, 0.1), inset 0 0 8px rgba(220, 150, 255, 0.3); }
+             100% { transform: scale(1); box-shadow: 0 0 10px rgba(138, 43, 226, 0.1), 0 0 15px rgba(138, 43, 226, 0.05), inset 0 0 5px rgba(220, 150, 255, 0.2); }
+         }
+
+        .decision-button:hover {
+            color: #3B005A;
+            background: rgba(160, 32, 240, 0.2);
+            border-color: rgba(138, 43, 226, 0.7);
+            transform: scale(1.05);
+            animation-play-state: paused;
+            box-shadow: 0 0 18px rgba(160, 32, 240, 0.3), 0 0 35px rgba(160, 32, 240, 0.15), inset 0 0 10px rgba(220, 150, 255, 0.4);
+        }
+        .decision-button:active { transform: scale(1.02); background: rgba(160, 32, 240, 0.15); }
+
+        .floating-shape {
+            position: absolute;
+            background: linear-gradient(135deg, rgba(160, 32, 240, 0.08), rgba(200, 150, 255, 0.05));
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 0;
+            animation: float 20s infinite ease-in-out alternate;
+            will-change: transform;
+            box-shadow: 0 0 30px rgba(160, 32, 240, 0.1);
+        }
+        .shape1 { width: clamp(150px, 25vw, 300px); height: clamp(150px, 25vw, 300px); top: 10%; left: 5%; border-radius: 45% 55% 60% 40% / 50% 40% 60% 50%; animation-duration: 22s; opacity: 0.7; }
+        .shape2 { width: clamp(200px, 30vw, 400px); height: clamp(100px, 15vw, 200px); top: 60%; right: 8%; border-radius: 60% 40% 30% 70% / 70% 50% 50% 30%; animation-duration: 28s; animation-delay: -4s; opacity: 0.6; }
+        .shape3 { width: clamp(100px, 20vw, 250px); height: clamp(180px, 30vh, 350px); bottom: 5%; left: 25%; border-radius: 30% 70% 50% 50% / 50% 60% 40% 50%; animation-duration: 25s; animation-delay: -8s; opacity: 0.5; }
+        .shape4 { width: clamp(60px, 10vw, 120px); height: clamp(60px, 10vw, 120px); top: 30%; right: 30%; border-radius: 50%; background: radial-gradient(circle, rgba(180, 80, 250, 0.1) 0%, rgba(200, 150, 255, 0.05) 70%); animation-duration: 18s; animation-delay: -2s; opacity: 0.8; }
+        @keyframes float { 0% { transform: translateY(0px) translateX(0px) rotate(0deg) scale(1); } 25% { transform: translateY(-15px) translateX(10px) rotate(5deg) scale(1.02); } 50% { transform: translateY(10px) translateX(-10px) rotate(-3deg) scale(0.98); } 75% { transform: translateY(-10px) translateX(-15px) rotate(3deg) scale(1.01); } 100% { transform: translateY(0px) translateX(0px) rotate(0deg) scale(1); } }
+
+        .glass-button {
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            padding: 10px 20px;
+            font-size: clamp(0.9rem, 1.8vw, 1.2rem);
+            color: #4A0072;
+            background: rgba(160, 32, 240, 0.08);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            cursor: none;
+            transition: all 0.3s ease;
+            margin: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+        .glass-button:hover {
+            background: rgba(160, 32, 240, 0.18);
+            border-color: rgba(138, 43, 226, 0.6);
+            box-shadow: 0 0 15px rgba(160, 32, 240, 0.2);
+            color: #3B005A;
+        }
+
+        /* Modalni prozor stilovi (Info Modal) */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center; z-index: 10000; opacity: 0; visibility: hidden; transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .modal-overlay.active { display: flex; opacity: 1; visibility: visible; }
+        .modal-content {
+            background: rgba(250, 245, 255, 0.9);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding-top: clamp(60px, 7vh, 65px);
+            padding-left: clamp(20px, 4vw, 40px);
+            padding-right: clamp(20px, 4vw, 40px);
+            padding-bottom: clamp(20px, 4vw, 40px);
+            border-radius: 12px;
+            border: 1px solid rgba(160, 32, 240, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(138, 43, 226, 0.15);
+            width: clamp(300px, 85vw, 1000px);
+            max-height: 85vh;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transform: scale(0.95); opacity: 0; transition: transform 0.4s 0.1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .modal-overlay.active .modal-content { transform: scale(1); opacity: 1; }
+
+        .modal-scrollable-content {
+            overflow-y: auto;
+            padding-right: 15px;
+            padding-bottom: clamp(60px, 10vh, 90px);
+            color: #4A0072;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            line-height: 1.65;
+            font-size: clamp(0.9rem, 1.7vw, 1.1rem);
+            flex-grow: 1;
+            min-height: 0;
+            text-align: justify;
+        }
+        .modal-scrollable-content::-webkit-scrollbar { width: 8px; }
+        .modal-scrollable-content::-webkit-scrollbar-track { background: rgba(160, 32, 240, 0.1); border-radius: 10px; }
+        .modal-scrollable-content::-webkit-scrollbar-thumb { background: rgba(160, 32, 240, 0.5); border-radius: 10px; }
+        .modal-scrollable-content::-webkit-scrollbar-thumb:hover { background: rgba(138, 43, 226, 0.8); }
+
+        .modal-content h2 {
+            font-family: 'Anton', sans-serif;
+            color: #6A0DAD;
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            margin-bottom: 20px;
+            text-align: center;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+        }
+        .modal-content p { margin-bottom: 1em; }
+        .modal-content p strong {
+            color: #3B005A;
+            font-weight: 600;
+        }
+        .modal-content p em {
+            color: #6A0DAD;
+            font-style: italic;
+            display: block;
+            text-align: right;
+            margin-top: 20px;
+        }
+        .modal-close-button {
+            position: absolute;
+            top: clamp(10px, 2vw, 15px);
+            right: clamp(10px, 2vw, 20px);
+            background: transparent;
+            border: none;
+            font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+            color: #A080C0;
+            cursor: none;
+            padding: 5px;
+            line-height: 1;
+            transition: color 0.2s ease, transform 0.2s ease;
+            z-index: 10;
+        }
+        .modal-close-button:hover {
+            color: #6A0DAD;
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .modal-action-button-container {
+            text-align: center;
+            border-top: 1px solid rgba(138, 43, 226, 0.15);
+            position: absolute;
+            bottom: clamp(15px, 3vh, 25px);
+            left: clamp(20px, 4vw, 40px);
+            right: clamp(20px, 4vw, 40px);
+            padding-top: clamp(10px, 2vh, 15px);
+            padding-bottom: clamp(10px, 2vh, 15px);
+            background: rgba(250, 245, 255, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(40px);
+            transition: opacity 0.4s 0.1s ease-out, visibility 0.4s 0.1s ease-out, transform 0.4s 0.1s ease-out;
+            z-index: 5;
+        }
+        .modal-action-button-container.visible { opacity: 1; visibility: visible; transform: translateY(0); }
+
+        .modal-action-button {
+            padding: clamp(10px, 1.8vh, 15px) clamp(20px, 3.5vw, 35px);
+            font-size: clamp(0.9rem, 1.8vw, 1.3rem);
+            display: inline-flex; flex-direction: column; align-items: center;
+            line-height: 1.3; opacity: 1; transform: none; animation: none; margin: 0;
+            transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+            color: #4A0072;
+            background: rgba(160, 32, 240, 0.08);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            border-radius: 8px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .modal-action-button:hover {
+            background: rgba(160, 32, 240, 0.18);
+            border-color: rgba(138, 43, 226, 0.6);
+            box-shadow: 0 0 15px rgba(160, 32, 240, 0.2);
+            color: #3B005A;
+            transform: scale(1.03);
+        }
+        .modal-action-button .button-subtitle {
+            font-size: clamp(0.7rem, 1.3vw, 0.9rem);
+            font-weight: normal;
+            color: #6A0DAD;
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* Video Player Modal Stilovi */
+        .video-modal-overlay {
+            z-index: 10010; /* Niže od prilagođenog kursora */
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .video-player-container {
+            position: relative;
+            width: clamp(300px, 70vw, 1000px);
+            max-width: 80%;
+            aspect-ratio: 16/9;
+            background: #10051a;
+            border-radius: 10px;
+            overflow: visible;
+            box-shadow: 0 10px 40px rgba(138, 43, 226, 0.2), 0 0 15px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+            transition: opacity 0.5s 0.1s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .modal-overlay.active .video-player-container { opacity: 1; transform: scale(1) translateY(0); }
+        .video-wrapper { width: 100%; height: 100%; position: relative; z-index: 1; border-radius: 10px; overflow: hidden; }
+        .video-wrapper::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 2px solid rgba(160, 32, 240, 0.5); border-radius: inherit; box-shadow: 0 0 8px rgba(160, 32, 240, 0.4), 0 0 15px rgba(200, 150, 255, 0.2); pointer-events: none; z-index: 2; }
+        #presentationVideo { display: block; width: 100%; height: 100%; border-radius: 8px; object-fit: contain; }
+        .video-glow-border {
+            position: absolute; top: -20px; left: -20px; right: -20px; bottom: -20px; border-radius: 30px;
+            box-shadow: 0 0 30px 10px rgba(138, 43, 226, 0.15), 0 0 50px 20px rgba(160, 32, 240, 0.1), 0 0 70px 30px rgba(180, 80, 250, 0.08);
+            pointer-events: none; z-index: 0; animation: subtleGlowPulse 5s infinite alternate ease-in-out;
+        }
+        @keyframes subtleGlowPulse { from { box-shadow: 0 0 30px 10px rgba(138, 43, 226, 0.15), 0 0 50px 20px rgba(160, 32, 240, 0.1), 0 0 70px 30px rgba(180, 80, 250, 0.08); opacity: 0.8; } to { box-shadow: 0 0 35px 12px rgba(148, 53, 236, 0.2), 0 0 55px 22px rgba(170, 42, 250, 0.12), 0 0 75px 32px rgba(190, 90, 255, 0.1); opacity: 1; } }
+        .video-modal-close-button {
+            position: absolute; top: -15px; right: -15px;
+            background: rgba(250, 245, 255, 0.85);
+            border: 1px solid rgba(160, 32, 240, 0.3);
+            border-radius: 50%; width: 35px; height: 35px; font-size: 20px;
+            color: #6A0DAD;
+            cursor: none; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; z-index: 3;
+            box-shadow: 0 0 10px rgba(160, 32, 240, 0.2);
+        }
+        .video-modal-close-button:hover {
+            background: rgba(160, 32, 240, 0.2);
+            color: #FFFFFF;
+            transform: scale(1.1) rotate(180deg);
+            box-shadow: 0 0 15px rgba(160, 32, 240, 0.4);
+        }
+
+        /* Responzivnost za vrlo male ekrane */
+        @media (max-width: 480px) {
+            .logo-text { font-size: clamp(2.8rem, 20vw, 10rem); }
+            .logo-subtext { font-size: clamp(0.9rem, 4vw, 2rem); letter-spacing: clamp(3px, 1vw, 8px); }
+            .decision-button { padding: 10px 20px; font-size: 0.9rem; }
+            .main-content-area { padding: 15px 20px; }
+            .modal-content { width: 95vw; padding: 15px; padding-bottom: clamp(70px, 12vh, 90px); }
+            .modal-scrollable-content { font-size: 0.85rem; padding-bottom: clamp(60px, 10vh, 80px); }
+            .modal-content h2 { font-size: 1.3rem; }
+            .modal-action-button-container { bottom: 15px; left: 15px; right: 15px; padding-top: 10px; padding-bottom: 10px;}
+            .modal-action-button { font-size: 0.85rem; }
+            .modal-action-button .button-subtitle { font-size: 0.65rem; }
+            .video-player-container { width: 95vw; }
+            .video-modal-close-button { top: -10px; right: -10px; width: 30px; height: 30px; font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor-dot-outline"></div>
+    <div class="cursor-dot"></div>
+
+    <div class="slide active" id="slide0">
+        <div class="content-wrapper">
+            <div class="page-title">InFace Invest Group</div>
+            <div class="main-content-area">
+                <div class="logo-container">
+                    <h1 class="logo-text">SFT21</h1>
+                    <p class="logo-subtext">BUSINESS CONCEPT</p>
+                </div>
+            </div>
+            <button class="decision-button" id="openInfoModalButton">Odluka o nastavku poslovanja</button>
+        </div>
+    </div>
+
+    <div id="infoModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-button" id="closeModalButton">×</button>
+            <div class="modal-scrollable-content">
+                <h2>Poštovani franšizeri,</h2>
+                <p>Prije svega iskreno i od srca veliki pozdrav svima.</p>
+                <p>Evo nakon gotovo tri pune godine od privremenog prekida poslovanja ponovo se vraćamo sa nadom da ćemo nastaviti tamo gdje smo, ne našom krivnjom, bili prisiljeni stati.</p>
+                <p>Vrlo je važno podsjetiti se, da smo 2018. godine registrirali kompaniju InFace Invest Group LTD, sa kojom smo 2019. godine pokrenuli poslovni koncept časno, pošteno i transparentno sa najboljim namjerama stvaranja jedinstvene online zajednice kroz franšizni model poslovanja, u kojem je bilo zamišljeno da se razvoj kompanije i cjelokupne zajednice (što uključuje razvoj softvera i aplikacija, pokretanje franšiznog poslovnog modela pod nazivom “SFT21 Business Concept“, operativne, administrativne i ostale tekuće troškove razvoja te marketinške i infrastrukturne potrebe vezane za projekt SFT21) financira od zarade koja će dolaziti od prodaje franšize našim članovima i njihovim nadogradnjama, kao i od investitora, većih ili manjih.</p>
+                <p>Na žalost, spletom za nas neugodnih okolnosti, bili smo prisiljeni, zbog nemogućnosti plaćanja troškova održavanja razvoja i funkcioniranja kompanije, postepeno otkazivati započeti razvoj sve do nedavnog skidanja svih stranica našega portala sa interneta.</p>
+                Nekvalitetan rad jednog dijela korisnika, zatim nadolazeća i dugotrajna Covid kriza, te ponajviše javno iznesene laži, klevete i uvrede od strane troje bivših korisnika, sa kojima smo prekinuli poslovnu suradnju zbog teških povreda pravila poslovanja i protiv kojih su podnesene kaznene prijave, stvarni su razlozi usporavanja razvoja i ovog privremenog prekida poslovanja. <p>O navedenim razlozima, detaljno smo informirali članstvo, snimanjem tridesetak videa sa dokazima, argumentima i činjenicama, koja smo objavili na stranicama kompanijskog youtube kanala, tako da smo po tom pitanju uglavnom sve rekli.</p>
+                <p>Na žalost, navedena videa pogledana su prosječno 1.500 puta, rijetko koji video do kraja, neka videa su pogledana manje od 1.000 puta, mali broj videa pogledan je više od 2.000 puta dok ni jedan nije pogledan više od 3.000 puta. </p>
+                <p>Kada uzmemo u obzir da je u kompaniju registrirano više od 24.000 korisnika evidentno je da velika većina korisnika nije upoznata o stvarnim i pravim razlozima koji su utjecali na ovaj privremeni prekid poslovanja.</p>
+                <p>Međutim, upravo je to pokazatelj, krivog i pogrešnog rada velike većine naših članova kao i jasan dokaz neinformiranosti članova kako po pitanju navedenih dokaza tako i po pitanju općeg razvoja kompanije i cjelokupne zajednice. </p>
+                <p>Jer kako objasniti činjenicu da od 24.000 korisnika prilikom puštanja društvene mreže u rad gotovo 14.000 korisnika nisu NIKADA pristupili istoj?! </p>
+                <p>Kako objasniti činjenicu da od 24.000 korisnika imamo samo 2.800 pretplatnika na našem youtube kanalu, koji bi trebao biti jedan od glavnih komunikacijsko-informacijskih kanala... </p>
+                <p>Gdje je ostalih 21.200 korisnika? Tko su ti ljudi? Tko ih je registrirao? Kako su se oni informirali o novostima, radnim obavezama i općenito o poslovanju?</p>
+                <p>Uglavnom, danas je mnogima jasno, da je kompanija privremeno prestala sa radom, ne svojm krivnjom, već zbog naprijed navedenih problema na koje nismo mogli nikako utjecati a nažalost nismo ih u startu mogli predvidjeti. </p>
+                <p>Kada smo problem primjetili, pokušali smo reagirati ali u nedostatku novca nismo mogli puno napraviti jer je za određene promjene u sistemu poslovanja jednostavno neophodan – novac.</p>
+                <p>Skidanjem stranica portala sa interneta, zbog nemogućnosti daljnjeg pokrivanja tekućih troškova, kompanija nije prestala sa radom niti smo odustali od same vizije stvaranja online zajednice, koju smo transparentno promovirali od samog početka poslovanja.</p>
+                <p>Kada pogledamo unatrag, danas možemo reći da smo možda pogriješili sa odabirom načina financiranja razvoja kompanije i cjelokupne zajednice, jer smo naivno vjerovali da ćemo uz pomoć članova bez većih problema doći bar do 50.000 korisnika, što je broj koji bi nam donio dovoljno sredstava da završimo potrebne softvere i aplikacije neophodne za daljni razvoj poslovnog koncepta i zajednice koju smo započeli stvarati.</p>
+                <p>Kao što je svima poznato, zbog navedenih problema, nismo uspjeli u tome. </p>
+                <p>Međutim, iako su neki od članova pomislili da je to definitivno kraj našeg poslovanja, mi ni u jednom trenutku nismo odustali od naše ideje i započetog poslovanja, već smo radili sve što je u našoj moći kako bi poslovanje nastavili.</p>
+                <p>Prije svega, važno je napomenuti, da smo na samom početku poslovanje pokrenuli uz 90 dnevnu garanciju povrata novca, što smo poštovali na način da je SVAKOME korisniku koji je u roku podnio zahtjev za povrat novca isti bio uredno i vraćen. Upravo je navedena garancija povrata novca dovela kompaniju do najvećeg problema, jer se pojavom javnih lažnih optužbi, kleveta i uvreda protiv vlasnika kompanije sve veći broj članova odlučilo na podnošenje zahjeva za povrat novca.  </p>
+                <p>U sitauciji kada nam je za razvoj softvera i ostalih troškova bilo potrebno sve više novca mi smo bili prisiljeni vraćati novac kako bi ispoštovali datu garanciju, što je posljedično uzrokovalo usporavanje cjelokupnog razvoja te u konačnici i privremeni prekid poslovanja. </p>
+                <p>Isto tako, jasno je i nedvojbeno prezentirano da novac uplaćen za ”pune franšize” kao i za veće investicije nije pod garancijom vraćanja jer je taj novac odmah odlazio u raspodjelu, na plaćanje faktura programerima ili na ostale tekuće troškove razvoja.  </p>
+                <p>Sukladno navedenom... sukladno franšiznom ugovoru kojega ste potpisali, kompanija InFace Invest Group LTD, <strong>NIJE DUŽNA VRATITI NOVAC KOJEGA STE UPLATILI KUPOVINOM STARTNOG PAKETA ILI UPLATOM VEĆE INVESTICIJE</strong>, međutim kako ne želimo da bilo tko smatra da je oštećen u našoj kompaniji, vaša će vam investicija biti vraćena!</p>
+                <p>S obzirom na činjenicu, da je novac korisnika utrošen na razvoj kompanije, novac namjenjen za povrat korisnicima koji odluče odustati od nastavka poslovanja ovoga trenutka jednostavno ne postoji.</p>
+                <p>Rješenje problema, kako za članove koji odustaju od poslovanja tako i za članove koji žele nastaviti poslovanje nalazi se samo u osiguravanju sredstava potrebnih za određene izmjene u SFT21 softveru kao i za završetak softvera i aplikacija za društvenu mrežu i webshop, što je u konačnici preduvjet nastavka poslovanja.</p>
+                <p>Sa tim u vezi, odlučili smo predstavit novi nadograđeni i u nekim segmentima izmijenjeni poslovni koncept nakon čega pokrećemo fazu prodaje Investicijskih paketa. </p>
+                <p>Novac prikupljen podajom paketa, biti će pohranjen na računu kompanije i iskorišten prvenstveno za nadogradnju i završetak započetih sotvera i aplikacija. Prioritet kompanije je prikupiti sredstva koja će osigurati početak neometanog nastavka poslovanja nakon čega slijedi povrat novca korisnicima koji će odustati i podnijeti zahtjev za povrat novca.</p>
+                <p>Nakon što završi period prikupljanja sredstava a prije prvog popunjavanja pozicija u SFalgoritmu, kompanija će pravovremeno obavijestiti sve korisnike iz starog sistema da donesu odluku o prekidu poslovanja uz zahtjev za povrat novca.</p>
+                <p><strong>POVRAT NOVCA ĆE SE ODVIJATI TRANSPARENTNO PREMA PRAVILIMA, KOJA ĆE OSIGURAVATI DA SE NOVAC VRAĆA U SKLADU SA MOGUĆNOSTIMA KOMPANIJE, PREMA DATUMU UPLATE STARTNOG PAKETA ILI INVESTICIJE KAO I PREMA VELIČINI IZNOSA KOJEGA TREBA VRATITI.</strong></p>
+                <p><strong>SUKLADNO SVEMU PRETHODNO NAVEDENOM, KOMPANIJA NASTAVLJA SA POSLOVANJEM TE SE OBAVEZUJE IZVRŠITI POVRAT NOVCA SVAKOME TKO BUDE PODNIO ZAHTJEV, KADA ZA TO BUDE U MOGUĆNOSTI.</strong></p>
+                <p>Pravo na povrat novca nemaju korisnici protiv kojih su podnesene kaznene prijave kao i oni korisnici koji su povukli zaradu iz starog sistema koja je veća ili ista njihovom uplaćenom startnom paketu ili investiciji.</p>
+                <p>Prilikom podnošenja zahtjeva za povrat novca biti će potrebno uz zahtjev priložiti fotografiju važećeg osobnog dokumenta sa kojim ste napravili KYC (potvrdu identiteta) ili fotografiju novog dokumenta ukoliko vam je stari prestao važiti.</p>
+                <p>Novac će vam u tom slučaju biti vraćen putem platnog procesora sa kojim ste izvršili uplatu ili moguće i na drugi način, o čemu ćete biti pravovremeno obaviješteni.</p>
+                <p>S obzirom da će proći određeni vremenski period prije nego li kompanija bude u mogućnosti započeti sa povratom novca, naš vam je najiskreniji savjet da ne odbacujete olako članstvo u našoj zajednici, te da u tom periodu pratite naš razvoj i dešavanja u kompaniji te da proučite sve pogodnosti novog SFT21 poslovnog koncpta, kako bi konačnu odluku o prekidu ili nastavku poslovanja donijeli na osnovi najnovijih informacija.</p>
+                <p>Jer jedna je činjenica neoboriva i nitko je do današnjeg dana nije pokušao demantirati... a to je činjenica da smo pokrenuli stvaranje zajednice u kojoj će korisnici imati mogućnosti pokrenuti svoje internet poslovanje putem stranica našega portala, u kojem će razvijati vlastitu društvenu mrežu i webshop, uz mogućnost ostvarivaja zarade na više načina kao i mnoge druge pogodnosti.</p>
+                <p>Bez obzira na sve probleme, prepreke, izazove koji su doveli do trenutne situacije mi jednostavno idemo dalje. Jer mi znamo... kao i mnogi naši vjerni članovi da smo počeli stvarati projekt sa neograničenim potencijalom na dobrobit naših članova i da nas ništa neće zaustaviti.</p>
+                <p>Moramo priznati, da su nas ponajprije javne lažne optužbe, klevete i uvrede privremeno zaustavile, nanijevši nam ogromnu štetu, ali usprkos svemu, znajući da nismo krivi i znajući da u rukama držimo i više nego vrijedan poslovni projekt, poput feniksa vraćamo se iz pepela... </p>
+                <p><strong>LAŽIMA</strong> su nas zaustavili i bacili na dno... i to im je uspjelo, samo zato što su na njihove laži nasjeli mnogi naši članovi koji su im povjerovali. Ali usprkos svemu, nisu pobijedili... ponovo ustajemo i nastavljamo gdje smo stali, jer uz nas je <strong>ISTINA</strong>.</p>
+                <p>Vjerujemo da će nam se na tom putu pridružiti kako veliki broj naših starih članova tako i mnogi koji će tek čuti za našu zajednicu.</p>
+                <br>
+                <p>Hvala na razumijevanju</p>
+                <p><em>Semper Fidelis</em></p>
+                <p>
+                    <em>Mladen Pejić</em>
+                    <em style="margin-top: 0px;">Zoran Lazarević</em>
+                </p>
+                <br>
+                <p style="text-align: center;"><strong>Molimo Vas da prije donošenja odluke pogledate i proučite prezentaciju SFT21 Business Concept. Na kraju prezentacije možete se upoznati sa opcijama o prekidu ili nastavku poslovanja. Odluku ćete donijeti po vlastitom izboru kada za to dođe vrijeme, o čemu ćete biti pravovremeno obaviješteni.</strong> </p>
+            </div>
+            <div class="modal-action-button-container">
+                <button class="glass-button modal-action-button" id="navigateToPresentationButton" style="margin-right: 10px;">
+                    SFT21 Business Concept
+                    <span class="button-subtitle">(prezentacija projekta)</span>
+                </button>
+                <button class="glass-button modal-action-button" id="navigateToInvestPaketiButton" style="margin-left: 10px;">
+                    Investicijski paketi
+                    <span class="button-subtitle">(pregled paketa)</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Player Modal -->
+    <div id="videoPlayerModal" class="modal-overlay video-modal-overlay">
+        <div class="video-player-container">
+            <button class="video-modal-close-button" id="closeVideoPlayerButton">×</button>
+            <div class="video-wrapper">
+                <video id="presentationVideo" controls controlsList="nodownload noremoteplayback" preload="metadata">
+                     <source src="videos/SFT21 Business Concept.mp4" type="video/mp4">
+                    Vaš preglednik ne podržava video tag.
+                </video>
+            </div>
+            <div class="video-glow-border"></div>
+        </div>
+    </div>
+
+    <div class="floating-shape shape1"></div>
+    <div class="floating-shape shape2"></div>
+    <div class="floating-shape shape3"></div>
+    <div class="floating-shape shape4"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cursorDot = document.querySelector(".cursor-dot");
+            const cursorDotOutline = document.querySelector(".cursor-dot-outline");
+
+            function updateInteractiveElements() {
+                const interactiveElements = document.querySelectorAll('button, a, [data-interactive], .modal-overlay.active button, .video-modal-overlay.active button');
+                interactiveElements.forEach(el => {
+                    el.removeEventListener('mouseenter', handleMouseEnter);
+                    el.removeEventListener('mouseleave', handleMouseLeave);
+                    el.addEventListener('mouseenter', handleMouseEnter);
+                    el.addEventListener('mouseleave', handleMouseLeave);
+                });
+            }
+
+            function handleMouseEnter() {
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                cursorDotOutline.style.transform = 'translate(-50%, -50%) scale(1.6)';
+                cursorDotOutline.style.backgroundColor = 'rgba(160, 32, 240, 0.3)';
+                cursorDotOutline.style.width = '35px';
+                cursorDotOutline.style.height = '35px';
+            }
+
+            function handleMouseLeave() {
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursorDotOutline.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursorDotOutline.style.backgroundColor = 'rgba(160, 32, 240, 0.2)';
+                cursorDotOutline.style.width = '30px';
+                cursorDotOutline.style.height = '30px';
+            }
+
+            window.addEventListener("mousemove", function (e) {
+                const posX = e.clientX;
+                const posY = e.clientY;
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
+                cursorDotOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 400, fill: "forwards", easing: "ease-out" });
+            });
+
+            const slides = document.querySelectorAll(".slide");
+            const infoModal = document.getElementById("infoModal");
+            const openInfoModalButton = document.getElementById("openInfoModalButton");
+            const closeModalButton = document.getElementById("closeModalButton");
+            const navigateToPresentationButton = document.getElementById("navigateToPresentationButton");
+            const navigateToInvestPaketiButton = document.getElementById("navigateToInvestPaketiButton");
+            const modalScrollableContent = infoModal.querySelector(".modal-scrollable-content");
+            const modalActionButtonContainer = infoModal.querySelector(".modal-action-button-container");
+
+            const videoPlayerModal = document.getElementById("videoPlayerModal");
+            const closeVideoPlayerButton = document.getElementById("closeVideoPlayerButton");
+            const presentationVideo = document.getElementById("presentationVideo");
+
+            let isInfoModalOpen = false;
+
+            function openInfoModal() {
+                infoModal.classList.add("active");
+                document.body.style.overflow = 'hidden';
+                isInfoModalOpen = true;
+                updateInteractiveElements();
+                modalActionButtonContainer.classList.remove('visible');
+                modalScrollableContent.scrollTop = 0;
+                modalScrollableContent.addEventListener('scroll', handleModalScroll);
+                requestAnimationFrame(handleModalScroll);
+            }
+
+            function closeInfoModal() {
+                infoModal.classList.remove("active");
+                isInfoModalOpen = false;
+                modalScrollableContent.removeEventListener('scroll', handleModalScroll);
+                // Vrati body scroll samo ako nijedan modal nije aktivan
+                if (!videoPlayerModal.classList.contains("active")) {
+                    document.body.style.overflow = '';
+                }
+                updateInteractiveElements();
+            }
+
+            function handleModalScroll() {
+                if (!isInfoModalOpen) return;
+                const scrollPosition = modalScrollableContent.scrollTop + modalScrollableContent.clientHeight;
+                const scrollHeight = modalScrollableContent.scrollHeight;
+                if (scrollPosition >= scrollHeight - 5) { // Unutar 5px od dna
+                    modalActionButtonContainer.classList.add('visible');
+                } else {
+                    modalActionButtonContainer.classList.remove('visible');
+                }
+            }
+
+            function openVideoPlayer() {
+                if (infoModal.classList.contains("active")) {
+                    closeInfoModal();
+                }
+
+                videoPlayerModal.classList.add("active");
+                document.body.style.overflow = 'hidden';
+                document.body.classList.add('system-cursor-active'); // Sakrij prilagođeni kursor i prikaži sistemski
+                presentationVideo.play();
+                updateInteractiveElements();
+            }
+
+            function closeVideoPlayer() {
+                videoPlayerModal.classList.remove("active");
+                if (presentationVideo) {
+                    presentationVideo.pause();
+                    presentationVideo.currentTime = 0;
+                }
+                document.body.classList.remove('system-cursor-active'); // Prikaži prilagođeni kursor
+
+                // Ponovno otvori infoModal i skrolaj na dno
+                openInfoModal();
+                setTimeout(() => {
+                    modalScrollableContent.scrollTop = modalScrollableContent.scrollHeight;
+                    handleModalScroll(); // Osiguraj vidljivost gumba
+                }, 150); // Kratko kašnjenje da se modal stigne otvoriti
+                updateInteractiveElements();
+            }
+
+            function handleGlobalKeyDown(event) {
+                if (isInfoModalOpen && infoModal.classList.contains("active")) {
+                    if (event.key === "Escape") {
+                        closeInfoModal();
+                    } else if (event.key === "ArrowDown") {
+                        event.preventDefault();
+                        modalScrollableContent.scrollTop += 40;
+                        handleModalScroll();
+                    } else if (event.key === "ArrowUp") {
+                        event.preventDefault();
+                        modalScrollableContent.scrollTop -= 40;
+                        handleModalScroll();
+                    }
+                }
+                else if (videoPlayerModal.classList.contains("active")) {
+                    if (event.key === "Escape") {
+                        closeVideoPlayer();
+                    }
+                }
+            }
+            document.addEventListener('keydown', handleGlobalKeyDown);
+
+            if (openInfoModalButton) openInfoModalButton.addEventListener("click", openInfoModal);
+            if (closeModalButton) closeModalButton.addEventListener("click", closeInfoModal);
+
+            // *** OVDJE JE PROMJENA: UKLONJEN je event listener za zatvaranje infoModala klikom na pozadinu ***
+            // if (infoModal) infoModal.addEventListener("click", (event) => {
+            //     if (event.target === infoModal) closeInfoModal();
+            // });
+            // Sada se infoModal zatvara SAMO klikom na gumb 'X' ili tipkom ESC.
+
+
+            if (navigateToPresentationButton) navigateToPresentationButton.addEventListener("click", openVideoPlayer);
+
+            if (navigateToInvestPaketiButton) {
+                navigateToInvestPaketiButton.addEventListener("click", () => {
+                    if (infoModal.classList.contains("active")) {
+                        closeInfoModal();
+                    }
+                    window.location.href = 'inpack.html';
+                });
+            }
+
+            // Video modal se zatvara samo klikom na 'X' ili ESC
+            if (closeVideoPlayerButton) closeVideoPlayerButton.addEventListener("click", closeVideoPlayer);
+            // Ostali klikovi oko video playera nemaju učinka jer je uklonjen event listener za overlay
+
+
+            updateInteractiveElements();
+            if (slides.length > 0 && !infoModal.classList.contains('active') && !videoPlayerModal.classList.contains('active')) {
+                slides[0].classList.add("active");
+            }
+
+            if (window.location.hash === '#infoModal') {
+                openInfoModal();
+                setTimeout(() => {
+                    modalScrollableContent.scrollTop = modalScrollableContent.scrollHeight;
+                    handleModalScroll();
+                }, 150);
+            }
+        });
+    </script>
+</body>
+</html>

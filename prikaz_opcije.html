@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SFT21 - Prikaz Opcije</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arial+Narrow&family=Anton&family=Georgia&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%;
+            min-height: 100%;
+            overflow-x: hidden;
+            overflow-y: auto;
+            background-color: #FFFFFF;
+            color: #4A0072;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            cursor: none;
+            position: relative;
+        }
+
+        .cursor-dot, .cursor-dot-outline { pointer-events: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); border-radius: 50%; z-index: 10001; opacity: 0; transition: opacity 0.3s ease-in-out; }
+        .cursor-dot { width: 8px; height: 8px; background-color: #A020F0; transition: transform 0.1s ease-out, background-color 0.2s ease; }
+        .cursor-dot-outline { width: 30px; height: 30px; background-color: rgba(160, 32, 240, 0.2); transition: transform 0.2s ease-out, background-color 0.2s ease, width 0.2s ease, height 0.2s ease; }
+        body:hover .cursor-dot, body:hover .cursor-dot-outline { opacity: 1; }
+
+        .page-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .option-close-button {
+            position: absolute;
+            top: clamp(15px, 3vh, 25px);
+            right: clamp(15px, 3vw, 30px);
+            background: transparent;
+            border: none;
+            font-family: 'Arial', sans-serif;
+            font-size: clamp(2rem, 4.5vw, 3rem);
+            font-weight: bold;
+            color: #FFFF00;
+            cursor: none;
+            padding: 5px;
+            line-height: 0.8;
+            transition: color 0.2s ease, transform 0.2s ease;
+            z-index: 100;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+        .option-close-button:hover {
+            color: #FFFFA0;
+            transform: scale(1.1);
+        }
+
+        .option-header {
+            background-color: #6A0DAD;
+            color: #FFFF00;
+            padding: clamp(10px, 2vh, 18px) clamp(20px, 5vw, 50px);
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+            margin-bottom: clamp(15px, 3vh, 30px);
+        }
+        .option-header h1 {
+            font-family: 'Anton', sans-serif;
+            font-size: clamp(1.4rem, 4vw, 2.2rem);
+            margin: 0;
+            font-weight: 400;
+            text-shadow: 1px 1px 0px rgba(0,0,0,0.7), 2px 2px 3px rgba(0,0,0,0.5);
+            letter-spacing: 0.5px;
+        }
+
+        .content-area {
+            width: 100%;
+            max-width: 1100px;
+            padding: clamp(10px, 2vw, 20px);
+        }
+
+        .initial-info ul {
+            list-style: none;
+            padding-left: 20px;
+            margin-bottom: clamp(15px, 2.5vh, 25px);
+        }
+        .initial-info li {
+            margin-bottom: 8px;
+            font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+            line-height: 1.5;
+            position: relative;
+            color: #4A0072;
+        }
+        .initial-info li::before {
+            content: "-";
+            position: absolute;
+            left: -15px;
+            color: #6A0DAD;
+        }
+        .initial-info strong, .note-text strong {
+            color: #3B005A;
+            font-weight: bold;
+        }
+
+        .note-text {
+            font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+            margin-bottom: clamp(20px, 3vh, 35px);
+            color: #4A0072;
+        }
+        .veci-iznos-intro-text {
+            font-size: clamp(0.95rem, 1.9vw, 1.15rem);
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #4A0072;
+        }
+
+        .main-title-options {
+            font-family: 'Georgia', serif;
+            color: #6A0DAD;
+            font-size: clamp(1.5rem, 3.5vw, 2.3rem);
+            text-align: center;
+            margin-bottom: clamp(25px, 4vh, 40px);
+            font-weight: bold;
+            text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+        }
+
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            gap: clamp(15px, 2.5vw, 25px);
+        }
+
+        .option-card {
+            background: rgba(245, 240, 250, 0.7);
+            border: 1px solid #9370DB;
+            border-radius: 10px;
+            padding: clamp(15px, 2.5vw, 25px);
+            flex-basis: clamp(280px, calc(33.333% - 20px), 350px);
+            flex-grow: 1;
+            max-width: 380px;
+            box-shadow: 0 4px 12px rgba(147, 112, 219, 0.25);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: clamp(15px, 2.5vw, 25px);
+            cursor: none; /* Cursor handled by JS */
+        }
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 18px rgba(147, 112, 219, 0.35);
+        }
+        .option-card h2 {
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+            color: #4A0072;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+        .option-card h3 {
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: clamp(0.95rem, 1.9vw, 1.2rem);
+            color: #6A0DAD;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: normal;
+        }
+        .option-card .choice-text {
+            font-size: clamp(0.95rem, 1.9vw, 1.15rem);
+            color: #D6336C;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .option-card .choice-text::before {
+            content: "↪ ";
+            color: #D6336C;
+        }
+        .option-card p, .option-card ul {
+            font-size: clamp(0.85rem, 1.7vw, 1rem);
+            line-height: 1.6;
+            color: #333333;
+            margin-bottom: 10px;
+        }
+        .option-card ul {
+            list-style: none;
+            padding-left: 15px;
+        }
+        .option-card ul li::before {
+            content: "-";
+            position: absolute;
+            left: -12px;
+            color: #6A0DAD;
+        }
+        .option-card ul li {
+            position: relative;
+            margin-bottom: 5px;
+            color: #333333;
+        }
+        .option-card strong {
+            color: #4A0072;
+            font-weight: bold;
+        }
+        .hidden {
+            display: none !important;
+        }
+        .veci-iznos-card-specific-text {
+            font-style: italic;
+            color: #555555;
+            font-size: clamp(0.8rem, 1.6vw, 0.95rem);
+            text-align: center;
+            margin-top: 5px;
+        }
+        .deduction-paragraph {
+            font-size: clamp(0.85rem, 1.7vw, 1rem);
+            line-height: 1.6;
+            color: #333333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+
+        @media (max-width: 992px) and (min-width: 601px) {
+            .option-card {
+                flex-basis: clamp(280px, calc(50% - 15px), 400px);
+            }
+        }
+        @media (max-width: 600px) {
+            .option-card {
+                flex-basis: 100%;
+                max-width: 450px;
+            }
+            .options-container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor-dot-outline"></div>
+    <div class="cursor-dot"></div>
+
+    <div class="page-wrapper">
+        <button class="option-close-button" id="closeOptionPageButton" title="Zatvori opcije">×</button>
+        <header class="option-header">
+            <h1>Poslovanje ste započeli kupovinom Startnog paketa od <span id="dynamicPageHeaderAmount">30 $</span></h1>
+        </header>
+
+        <div class="content-area">
+            <div class="initial-info" id="initialInfoContent">
+                <ul id="standardInfoList">
+                    <li>dobivate <strong><span id="dynamicSfbPoints">60</span> SFbodova</strong> (SFb)</li>
+                    <li>plus bodovi na osnovi zarade iz rezervnog novčanika, ukoliko ste ostvarili nadogradnju računa (1 SFC = 1 SFb)</li>
+                    <li>plus bodovi na osnovi zarade iz novčanika, ukoliko ste imali istu u novčaniku (1 SFC = 2 SFb)</li>
+                    <li>plus 50% ukupnog zbroja osobnih SFb vaših direktnih članova</li>
+                    <li>plus 25% ukupnog zbroja osobnih SFb njihovih direktnih članova (vaši indirektni članovi)</li>
+                </ul>
+                <p class="note-text" id="standardNoteText"><strong>Napomena:</strong><br>
+                Broj SFbodova vaših direktnih i indirektnih članova, priznaje vam se isključivo od onih članova koji nastavljaju poslovanje.</p>
+            </div>
+
+            <h2 class="main-title-options">VAŠE MOGUĆNOSTI</h2>
+
+            <div class="options-container">
+                <!-- Prva kartica -->
+                <div class="option-card" id="opcijaAktivniBezIP">
+                    <h2>Nastaviti poslovanje kao AKTIVAN član</h2>
+                    <h3 id="opcijaAktivniBezIP_sub">(SFstarter ili SFfranšizer)</h3>
+                    <p class="choice-text" id="opcijaAktivniBezIP_choice">ne želim ulagati u Investicijski paket</p>
+                    <p id="opcijaAktivniBezIP_desc1">Poslovanje nastavljate otvaranjem <strong>osobnog ili poslovnog</strong> računa sa <strong>SPfree</strong>.</p>
+                    <p id="opcijaAktivniBezIP_desc2">Na osnovi ukupnog broja SFbodova iz starog sistema;</p>
+                    <ul id="opcijaAktivniBezIP_list">
+                        <li>zauzimate poziciju u SFalgoritmu</li>
+                        <li>određuje vam se LIMIT maksimalne zarade (do max. 2100 SFC)</li>
+                    </ul>
+                </div>
+
+                <!-- Druga kartica -->
+                <div class="option-card" id="opcijaAktivniSaIP">
+                    <h2>Nastaviti poslovanje kao AKTIVAN član</h2>
+                    <h3>(SFinvestitor/starter ili SFinvestitor/franšizer)</h3>
+                    <p class="choice-text">želim uložiti u Investicijski paket</p>
+                    <p class="deduction-paragraph">(iznos Investicijskog paketa umanjuje vam se za <span class="dynamic-deduction-amount">30 €</span>)</p>
+                    <p class="veci-iznos-card-specific-text hidden">(cijeli iznos investicije iz starog sistema pretvara vam se u Investicijski paket)</p>
+                    <p>Poslovanje nastavljate otvaranjem <strong>investicijskog</strong> računa sa <strong>SPfree</strong>,</p>
+                    <p>Na osnovi zbroja SFbodova iz starog sistema sa brojem SFbodova dobivenih ulaganjem u Investicijski paket;</p>
+                    <ul>
+                        <li>zauzimate poziciju u SFalgoritmu</li>
+                        <li>određuje vam se LIMIT maksimalne zarade (do max. 2100 SFC)</li>
+                    </ul>
+                </div>
+
+                <!-- Treća kartica -->
+                <div class="option-card" id="opcijaPasivniSaIP">
+                    <h2>Nastaviti poslovanje kao PASIVAN član</h2>
+                    <h3>(SFinvestitor)</h3>
+                    <p class="choice-text">želim uložiti u Investicijski paket</p>
+                    <p class="deduction-paragraph">(iznos Investicijskog paketa umanjuje vam se za <span class="dynamic-deduction-amount">30 €</span>)</p>
+                    <p class="veci-iznos-card-specific-text hidden">(cijeli iznos investicije iz starog sistema pretvara vam se u Investicijski paket)</p>
+                    <p>Poslovanje nastavljate otvaranjem <strong>investicijskog</strong> računa bez startnog paketa,</p>
+                    <p>Na osnovi zbroja SFbodova iz starog sistema sa brojem SFbodova dobivenih ulaganjem u Invest paket, zauzimate poziciju u SFalgoritmu, kao SFinvestitor.</p>
+                </div>
+
+                <!-- Četvrta kartica -->
+                <div class="option-card option-card-secondary-row" id="opcijaBPR">
+                    <h2>Nastaviti kao besplatno registrirani član</h2>
+                    <h3>(SFkorisnik / BPR)</h3>
+                    <p class="choice-text">uz zahtjev za povrat novca</p>
+                    <p>Pravo na povrat novca nemaju korisnici koji su zaradili veći iznos od iznosa uplaćenog za SP.</p>
+                    <p>Uz zahtjev je potrebno priložiti osobni dokument sa kojim ste potvrdili svoj identitet (KYC)</p>
+                </div>
+
+                <!-- Peta kartica -->
+                <div class="option-card option-card-secondary-row" id="opcijaOdustanak">
+                    <h2>Odustati od poslovanja</h2>
+                    <p class="choice-text">uz zahtjev za povrat novca</p>
+                    <p>Pravo na povrat novca nemaju korisnici koji su zaradili veći iznos od iznosa uplaćenog za SP.</p>
+                    <p>Uz zahtjev je potrebno priložiti osobni dokument sa kojim ste potvrdili svoj identitet (KYC)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const cursorDot = document.querySelector(".cursor-dot");
+            const cursorDotOutline = document.querySelector(".cursor-dot-outline");
+
+            function updateInteractiveElements() {
+                const interactiveElements = document.querySelectorAll('button, a, [data-interactive], .option-card, .option-close-button');
+                interactiveElements.forEach(el => {
+                    el.removeEventListener('mouseenter', handleMouseEnter);
+                    el.removeEventListener('mouseleave', handleMouseLeave);
+                    el.addEventListener('mouseenter', handleMouseEnter);
+                    el.addEventListener('mouseleave', handleMouseLeave);
+                });
+            }
+
+            function handleMouseEnter() {
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                cursorDot.style.backgroundColor = '#BF5FFF';
+                cursorDotOutline.style.transform = 'translate(-50%, -50%) scale(1.6)';
+                cursorDotOutline.style.backgroundColor = 'rgba(191, 95, 255, 0.3)';
+                cursorDotOutline.style.width = '35px';
+                cursorDotOutline.style.height = '35px';
+            }
+
+            function handleMouseLeave() {
+                cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursorDot.style.backgroundColor = '#A020F0';
+                cursorDotOutline.style.transform = 'translate(-50%, -50%) scale(1)';
+                cursorDotOutline.style.backgroundColor = 'rgba(160, 32, 240, 0.2)';
+                cursorDotOutline.style.width = '30px';
+                cursorDotOutline.style.height = '30px';
+            }
+
+            window.addEventListener("mousemove", function (e) {
+                const posX = e.clientX;
+                const posY = e.clientY;
+                cursorDot.style.left = `${posX}px`;
+                cursorDot.style.top = `${posY}px`;
+                cursorDotOutline.animate(
+                    { left: `${posX}px`, top: `${posY}px` },
+                    { duration: 400, fill: "forwards", easing: "ease-out" }
+                );
+            });
+
+            const closeOptionPageButton = document.getElementById('closeOptionPageButton');
+            if (closeOptionPageButton) {
+                closeOptionPageButton.addEventListener('click', () => {
+                    window.location.href = 'izbor.html';
+                });
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const paramIznos = urlParams.get('iznos');
+            const paramValuta = urlParams.get('valuta');
+
+            console.log("--- SCRIPT START (prikaz_opcije.html) ---");
+            console.log("Primljeni URL parametri (prikaz_opcije.html):");
+            console.log("paramIznos:", paramIznos);
+            console.log("paramValuta:", paramValuta);
+
+
+            const pageHeaderAmountSpan = document.getElementById('dynamicPageHeaderAmount');
+            const deductionAmountSpans = document.querySelectorAll('.dynamic-deduction-amount');
+            const sfbPointsSpan = document.getElementById('dynamicSfbPoints');
+            const initialInfoContentDiv = document.getElementById('initialInfoContent');
+            const standardInfoList = document.getElementById('standardInfoList');
+            const standardNoteText = document.getElementById('standardNoteText');
+
+            const deductionParagraphs = document.querySelectorAll('.deduction-paragraph');
+            const veciIznosCardTexts = document.querySelectorAll('.veci-iznos-card-specific-text');
+
+            const card1 = document.getElementById('opcijaAktivniBezIP');
+            const card1Sub = document.getElementById('opcijaAktivniBezIP_sub');
+            const card1Choice = document.getElementById('opcijaAktivniBezIP_choice');
+            const card1Desc1 = document.getElementById('opcijaAktivniBezIP_desc1');
+            const card1Desc2 = document.getElementById('opcijaAktivniBezIP_desc2');
+            const card1List = document.getElementById('opcijaAktivniBezIP_list');
+
+
+            if (paramIznos && paramValuta) {
+                let displayText = '';
+                let calculatedSfbPoints = 0;
+
+                // Resetiranje prve kartice na default prije specifičnih izmjena
+                if (card1Sub) card1Sub.innerHTML = '(SFstarter ili SFfranšizer)';
+                if (card1Choice) card1Choice.innerHTML = 'ne želim ulagati u Investicijski paket';
+                if (card1Desc1) card1Desc1.innerHTML = 'Poslovanje nastavljate otvaranjem <strong>osobnog ili poslovnog</strong> računa sa <strong>SPfree</strong>.';
+                if (card1Desc2) {
+                    card1Desc2.innerHTML = 'Na osnovi ukupnog broja SFbodova iz starog sistema;';
+                    card1Desc2.classList.remove('hidden');
+                }
+                if (card1List) {
+                    card1List.innerHTML = `
+                        <li>zauzimate poziciju u SFalgoritmu</li>
+                        <li>određuje vam se LIMIT maksimalne zarade (do max. 2100 SFC)</li>
+                    `;
+                    card1List.classList.remove('hidden');
+                }
+
+                if (paramIznos === 'veci' && paramValuta === 'iznos') {
+                    const pageHeaderH1 = document.querySelector('.option-header h1');
+                    if (pageHeaderH1) pageHeaderH1.textContent = 'Poslovanje ste započeli investicijom većeg iznosa';
+                    if (initialInfoContentDiv) {
+                        initialInfoContentDiv.innerHTML = `
+                            <p class="veci-iznos-intro-text">Ukoliko ste kao član u starom sistemu uz startni paket uplatili poslovni račun sa radnim mjestima (BAWS) ili ste uplatili investiciju</p>
+                            <ul>
+                                <li>dobivate broj <strong>SFbodova</strong> (SFb) na osnovi veličine ukupno investiranog iznosa (1 € = 2 SFb)</li>
+                                <li>plus bodovi na osnovi zarade iz rezervnog novčanika, ukoliko ste ostvarili nadogradnju računa (1 SFC = 1 SFb)</li>
+                                <li>plus bodovi na osnovi zarade iz novčanika, ukoliko ste imali istu u novčaniku (1 SFC = 2 SFb)</li>
+                                <li>plus 50% ukupnog zbroja osobnih SFb vaših direktnih članova</li>
+                                <li>plus 25% ukupnog zbroja osobnih SFb njihovih direktnih članova (vaši indirektni članovi)</li>
+                            </ul>
+                            <p class="note-text"><strong>Napomena:</strong> Broj SFBodova vaših direktnih i indirektnih članova, priznaje vam se isključivo od onih članova koji nastavljaju poslovanje.</p>
+                        `;
+                    }
+                    deductionParagraphs.forEach(p => p.classList.add('hidden'));
+                    veciIznosCardTexts.forEach(txt => txt.classList.remove('hidden'));
+
+                    if (card1Sub) card1Sub.innerHTML = '(SFfranšizer)';
+                    if (card1Desc1) card1Desc1.innerHTML = 'Poslovanje nastavljate istovremenim otvaranjem, jednog ili više (max. 5) osobnih ili jednog poslovnog i više (max. 4) osobna računa sa SPfree, uz zahtjev za povrat preplaćenog iznosa.';
+                    if (card1Desc2) card1Desc2.classList.add('hidden');
+                    if (card1List) card1List.classList.add('hidden');
+
+                } else if ((paramIznos === '1955' && paramValuta === 'usd') || (paramIznos === '2710' && paramValuta === 'eur')) {
+                     if (standardInfoList) standardInfoList.classList.remove('hidden');
+                    if (standardNoteText) standardNoteText.classList.remove('hidden');
+                    deductionParagraphs.forEach(p => p.classList.remove('hidden'));
+                    veciIznosCardTexts.forEach(txt => txt.classList.add('hidden'));
+
+                    if (paramIznos === '1955' && paramValuta === 'usd') {
+                        calculatedSfbPoints = 1955 * 2;
+                        displayText = `1955 $`;
+                    } else {
+                        calculatedSfbPoints = 2710 * 2;
+                        displayText = `2710 €`;
+                    }
+
+                    if (sfbPointsSpan) sfbPointsSpan.textContent = calculatedSfbPoints;
+                    if (pageHeaderAmountSpan) {
+                        pageHeaderAmountSpan.textContent = displayText;
+                        pageHeaderAmountSpan.style.display = 'inline';
+                        pageHeaderAmountSpan.parentElement.firstChild.textContent = 'Poslovanje ste započeli kupovinom Startnog paketa od ';
+                    }
+                    // *** IZMJENA: Umanjenje je UVIJEK u EURIMA ***
+                    deductionAmountSpans.forEach(span => span.textContent = `${paramIznos} €`);
+                    if (card1Desc1) card1Desc1.innerHTML = 'Poslovanje nastavljate otvaranjem <strong>dva (2)</strong><br>osobna ili poslovna računa sa <strong>SPfree</strong>,';
+                    if (card1List) card1List.innerHTML = `
+                        <li>zauzimate dvije pozicije u SFalgoritmu</li>
+                        <li>određuje vam se LIMIT maksimalne zarade na<br>svakom računu posebno (do max. 2100 SFC)</li>
+                    `;
+                } else if (paramIznos === '2710' && paramValuta === 'usd') {
+                     if (standardInfoList) standardInfoList.classList.remove('hidden');
+                    if (standardNoteText) standardNoteText.classList.remove('hidden');
+                    deductionParagraphs.forEach(p => p.classList.remove('hidden'));
+                    veciIznosCardTexts.forEach(txt => txt.classList.add('hidden'));
+                    calculatedSfbPoints = 2710 * 2;
+                    if (sfbPointsSpan) sfbPointsSpan.textContent = calculatedSfbPoints;
+                    displayText = `2710 $`;
+                    if (pageHeaderAmountSpan) {
+                        pageHeaderAmountSpan.textContent = displayText;
+                        pageHeaderAmountSpan.style.display = 'inline';
+                        pageHeaderAmountSpan.parentElement.firstChild.textContent = 'Poslovanje ste započeli kupovinom Startnog paketa od ';
+                    }
+                    // *** IZMJENA: Umanjenje je UVIJEK u EURIMA ***
+                    deductionAmountSpans.forEach(span => span.textContent = `${paramIznos} €`);
+                    if (card1Choice) card1Choice.innerHTML = 'ne želim ulagati u paket';
+                    if (card1Desc1) card1Desc1.innerHTML = 'Poslovanje nastavljate otvaranjem <strong>dva (2)</strong><br>osobna ili poslovna računa sa <strong>SPfree</strong>,';
+                    if (card1List) card1List.innerHTML = `
+                        <li>zauzimate dvije pozicije u SFalgoritmu</li>
+                        <li>određuje vam se LIMIT maksimalne zarade na<br>svakom računu posebno (do max. 2100 SFC)</li>
+                    `;
+                } else { // Standardno rukovanje ostalim numeričkim iznosima
+                    if (standardInfoList) standardInfoList.classList.remove('hidden');
+                    if (standardNoteText) standardNoteText.classList.remove('hidden');
+                    deductionParagraphs.forEach(p => p.classList.remove('hidden'));
+                    veciIznosCardTexts.forEach(txt => txt.classList.add('hidden'));
+                    const numericIznos = parseFloat(paramIznos);
+                    if (!isNaN(numericIznos)) {
+                        calculatedSfbPoints = numericIznos * 2;
+                        if (sfbPointsSpan) sfbPointsSpan.textContent = calculatedSfbPoints;
+                    } else {
+                        if (sfbPointsSpan) sfbPointsSpan.textContent = "60";
+                    }
+                    const currencySymbol = paramValuta.toLowerCase() === 'usd' || paramValuta === '$' ? '$' : '€';
+                    displayText = `${paramIznos} ${currencySymbol}`;
+                    if (pageHeaderAmountSpan) {
+                        pageHeaderAmountSpan.textContent = displayText;
+                        pageHeaderAmountSpan.style.display = 'inline';
+                        pageHeaderAmountSpan.parentElement.firstChild.textContent = 'Poslovanje ste započeli kupovinom Startnog paketa od ';
+                    }
+                    // *** IZMJENA: Umanjenje je UVIJEK u EURIMA ***
+                    // Ova linija sada ispravno postavlja € za sve slučajeve, uključujući i 30$ -> 30€
+                    deductionAmountSpans.forEach(span => span.textContent = `${paramIznos} €`);
+                }
+            } else { // Fallback ako NEMA parametara
+                if (sfbPointsSpan) sfbPointsSpan.textContent = "60";
+                if (pageHeaderAmountSpan) {
+                     pageHeaderAmountSpan.textContent = "30 $";
+                     pageHeaderAmountSpan.style.display = 'inline';
+                     pageHeaderAmountSpan.parentElement.firstChild.textContent = 'Poslovanje ste započeli kupovinom Startnog paketa od ';
+                }
+                deductionAmountSpans.forEach(span => span.textContent = "30 €");
+                deductionParagraphs.forEach(p => p.classList.remove('hidden'));
+                veciIznosCardTexts.forEach(txt => txt.classList.add('hidden'));
+            }
+
+            // Event listeneri za kartice
+            const allOptionCards = document.querySelectorAll('.option-card');
+            allOptionCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    let targetUrl = '';
+                    let finalIznos = paramIznos || '30';
+                    let finalValuta = paramValuta || 'usd';
+
+                    console.log(`Klik na karticu ${card.id}. Prosljeđujem: iznos=${finalIznos}, valuta=${finalValuta}`);
+
+                    if (card.id === 'opcijaAktivniBezIP') {
+                        targetUrl = `prva_kartica.html?iznos=${encodeURIComponent(finalIznos)}&valuta=${encodeURIComponent(finalValuta)}`;
+                    } else if (card.id === 'opcijaAktivniSaIP') {
+                        targetUrl = `druga_kartica.html?iznos=${encodeURIComponent(finalIznos)}&valuta=${encodeURIComponent(finalValuta)}`;
+                    } else if (card.id === 'opcijaPasivniSaIP') {
+                        targetUrl = `treca_kartica.html?iznos=${encodeURIComponent(finalIznos)}&valuta=${encodeURIComponent(finalValuta)}`;
+                    } else if (card.id === 'opcijaBPR') {
+                        targetUrl = `cetvrta_kartica.html`;
+                    } else if (card.id === 'opcijaOdustanak') {
+                        targetUrl = `peta_kartica.html`;
+                    } else {
+                        console.log(`Nije definirana akcija za karticu s ID-om: ${card.id}`);
+                        return;
+                    }
+                    window.location.href = targetUrl;
+                });
+            });
+            updateInteractiveElements();
+        });
+    </script>
+</body>
+</html>

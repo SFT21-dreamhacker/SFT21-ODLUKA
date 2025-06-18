@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SFT21 - Investicijski Paketi</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Stardos+Stencil:wght@400;700&family=Arial+Narrow&family=Anton&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        /* Osnovni stilovi za inpack.html */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            width: 100%;
+            height: 100%; /* Dodano: Osigurava da body zauzima cijelu visinu */
+            background-color: #FFFFFF;
+            color: #4A0072;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+            cursor: none; /* Sakrij defaultni kursor */
+            position: relative; /* Potrebno za neke efekte kursora ili pozicioniranje */
+            overflow-x: hidden; /* Spriječava horizontalno skrolanje */
+            /* REMOVED: overflow: hidden; - Ova linija je uzrokovala problem sa skrolanjem i rasporedom */
+        }
+
+        /* Kada je modal otvoren, spriječi skrolanje tijela */
+        body.modal-open {
+            overflow: hidden !important;
+        }
+
+        /* === POČETAK CSS-A ZA PRILAGOĐENI KURSOR (preuzeto s odluka.html) === */
+        .cursor-dot, .cursor-dot-outline {
+            pointer-events: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            z-index: 10011; /* Visok z-index da bude iznad svega */
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .cursor-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #A020F0;
+            transition: transform 0.1s ease-out, background-color 0.2s ease;
+        }
+        .cursor-dot-outline {
+            width: 30px;
+            height: 30px;
+            background-color: rgba(160, 32, 240, 0.2);
+            transition: transform 0.2s ease-out, background-color 0.2s ease, width 0.2s ease, height 0.2s ease;
+        }
+        body:hover .cursor-dot, body:hover .cursor-dot-outline {
+            opacity: 1;
+        }
+        /* Ovaj CSS blok se ne bi trebao aktivirati ako ne koristimo klasu 'system-cursor-active' u JS-u za video */
+        body.system-cursor-active .cursor-dot,
+        body.system-cursor-active .cursor-dot-outline {
+            opacity: 0 !important;
+        }
+        /* === KRAJ CSS-A ZA PRILAGOĐENI KURSOR === */
+
+
+        /* Zamjena za Tailwind klase - osnovno stiliziranje */
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .mx-auto { margin-left: auto; margin-right: auto; }
+        .px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+        .py-10 { padding-top: 2.5rem; padding-bottom: 2.5rem; }
+        .py-16 { padding-top: 4rem; padding-bottom: 4rem; }
+        .py-20 { padding-top: 5rem; padding-bottom: 5rem; }
+        .pt-16 { padding-top: 4rem; }
+        .pt-8 { padding-top: 2rem; } /* Dodana nova klasa za pt-8 */
+        .pb-24 { padding-bottom: 6rem; }
+        .pb-16 { padding-bottom: 4rem; } /* Dodana nova klasa za pb-16 */
+        .pb-8 { padding-bottom: 2rem; } /* Dodana nova klasa za pb-8 */
+        .mt-12 { margin-top: 3rem; }
+        .mt-16 { margin-top: 4rem; }
+        .mt-6 { margin-top: 1.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mb-6 { margin-bottom: 1.5rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mb-10 { margin-bottom: 2.5rem; }
+        .mb-12 { margin-bottom: 3rem; }
+        .mb-16 { margin-bottom: 4rem; }
+
+        .text-center { text-align: center; }
+        .text-justify { text-align: justify; }
+        .text-3xl { font-size: 1.875rem; }
+        .md\:text-5xl { font-size: 3rem; }
+        .md\:text-4xl { font-size: 2.25rem; }
+        .text-2xl { font-size: 1.5rem; }
+        .text-xl { font-size: 1.25rem; }
+        .text-lg { font-size: 1.125rem; }
+        .text-sm { font-size: 0.875rem; }
+
+        .font-bold { font-weight: bold; }
+        .font-semibold { font-weight: 600; }
+        .italic { font-style: italic; }
+
+        .text-purple-500 { color: #6A0DAD; }
+        .bg-purple-500 { background-color: #6A0DAD; }
+        .text-purple-300 { color: #3B005A;} /* Originalna boja ostaje za specifične elemente */
+        .text-gray-300 { color: #4A0072; }
+        .text-gray-200 { color: #3B005A; }
+        .text-white { color: #3B005A; } /* Ovo je bila specifična postavka, ostavljam je */
+        .text-fluorescent-green { color: #6A0DAD; }
+
+        .relative { position: relative; }
+        .absolute { position: absolute; }
+        .z-10 { z-index: 10; } /* Normalan z-index za sadržaj */
+        .overflow-hidden { overflow: hidden; }
+
+        .grid { display: grid; }
+        .grid-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
+        .gap-8 { gap: 2rem; }
+        .gap-6 { gap: 1.5rem; }
+        .gap-4 { gap: 1rem; }
+        .space-y-4 > :not([hidden]) ~ :not([hidden]) { margin-top: 1rem; margin-bottom: 0; }
+        .space-y-10 > :not([hidden]) ~ :not([hidden]) { margin-top: 2.5rem; margin-bottom: 0; }
+
+        .max-w-3xl { max-width: 48rem; }
+        .max-w-4xl { max-width: 56rem; }
+        .max-w-5xl { max-width: 64rem; }
+
+        .leading-relaxed { line-height: 1.625; }
+        .w-24 { width: 6rem; }
+        .h-1 { height: 0.25rem; }
+
+        .ip-card {
+            background-color: rgba(230, 220, 240, 0.3);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05), 0 0 15px rgba(138, 43, 226, 0.1);
+        }
+        .ip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.08), 0 0 30px rgba(138, 43, 226, 0.15);
+        }
+        .ip-card-header {
+            text-align: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid rgba(138, 43, 226, 0.2);
+        }
+        .ip-card-header h4 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #4A0072;
+        }
+        .ip-card-body p {
+            margin-bottom: 0.75rem;
+            font-size: 0.95rem;
+            color: #4A0072;
+        }
+        .ip-card-body .label {
+            font-weight: 600;
+            color: #3B005A;
+        }
+        .ip-card-body .value {
+            font-weight: bold;
+            color: #ff0000; /* Crvena boja za vrijednosti */
+        }
+        .ip-card-body .duration {
+            font-size: 0.8em;
+            color: #6A0DAD;
+            margin-left: 0.5rem;
+        }
+        .ip-card-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .btn-primary, .btn-outline {
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: none; /* Važno: Svi gumbi moraju imati cursor: none; */
+            text-align: center;
+        }
+        .btn-primary {
+            background-color: #6A0DAD;
+            color: white;
+            border: 1px solid transparent;
+        }
+        .btn-primary:hover {
+            background-color: #4A0072;
+            box-shadow: 0 0 15px rgba(106, 0, 173, 0.5);
+        }
+         .btn-outline {
+            background-color: transparent;
+            color: #6A0DAD;
+            border: 1px solid #6A0DAD;
+        }
+        .btn-outline:hover {
+            background-color: rgba(106, 0, 173, 0.1);
+            color: #4A0072;
+        }
+
+        .ip-wide-card {
+            background-color: rgba(230, 220, 240, 0.2);
+            border-radius: 0.75rem;
+        }
+        .ip-wide-card-header {
+            background-color: rgba(138, 43, 226, 0.1);
+            padding: 1rem 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(138, 43, 226, 0.3);
+        }
+        .ip-wide-card-header-title {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: #4A0072;
+        }
+        .amount-input-container {
+            margin-top: 1.5rem;
+            text-align: center;
+            display: none;
+        }
+        .amount-input-container label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #6A0DAD;
+        }
+        .amount-input-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        .amount-input {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: rgba(138, 43, 226, 0.05);
+            border: 1px solid rgba(138, 43, 226, 0.3);
+            border-radius: 0.375rem;
+            color: #3B005A;
+            text-align: center;
+            font-size: 1.1rem;
+            cursor: none; /* I input polja */
+        }
+        .amount-input::placeholder { color: #A080C0; }
+        .currency-symbol {
+            margin-left: -30px;
+            padding-right: 10px;
+            color: #6A0DAD;
+            font-size: 1.1rem;
+        }
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .glass-card {
+            background-color: rgba(230, 220, 240, 0.2);
+            border: 1px solid rgba(138, 43, 226, 0.15);
+            border-radius: 0.75rem;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.08);
+        }
+
+        .important-note-card {
+            border: 2px solid rgba(106, 0, 173, 0.5); /* Jači ljubičasti okvir */
+            box-shadow: 0 0 30px rgba(106, 0, 173, 0.2); /* Pojačana sjena */
+        }
+        .p-8 { padding: 2rem; }
+
+        .info-box {
+            background-color: rgba(230, 220, 240, 0.25);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            border: 1px solid rgba(138, 43, 226, 0.2);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .info-box-icon {
+            font-size: 2.5rem;
+            color: #6A0DAD;
+            margin-bottom: 1rem;
+        }
+        .info-box-content h5 {
+            font-size: 1.125rem;
+            font-weight: bold;
+            color: #4A0072;
+            margin-bottom: 0.5rem;
+        }
+        .info-box-content p {
+            font-size: 0.9rem;
+            color: #4A0072;
+            line-height: 1.5;
+        }
+        .investor-note {
+            border-top: 1px dashed rgba(138, 43, 226, 0.2);
+            padding-top: 1.5rem;
+            color: #4A0072;
+        }
+
+        .border-l-4 { border-left-width: 4px; }
+        .border-purple-500 { border-color: #6A0DAD; }
+        .pl-6 { padding-left: 1.5rem; }
+
+        .animated-background {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        .glow {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(160, 32, 240, 0.05) 0%, transparent 70%);
+            opacity: 0.5;
+        }
+
+        .fade-in {
+            opacity: 0;
+            animation: fadeInAnimation 0.8s ease-out forwards;
+        }
+        @keyframes fadeInAnimation {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Centriranje 'Troškovi razvoja' info-boxa */
+        #dev-cost-info-box {
+            grid-column: span 2;
+            justify-self: center;
+        }
+
+        /* Stil za plutajući crveni gumb */
+        #confirmSelectionButton {
+            position: fixed;
+            bottom: 40px; /* Razmak od dna */
+            right: 40px; /* Razmak od desne strane */
+            z-index: 10000; /* Visok z-index da bude iznad sadržaja, ali ispod kursora (10011) */
+
+            /* Stilovi preuzeti od .btn-primary za dosljednost */
+            display: inline-block;
+            padding: 1.2rem 2.5rem; /* Malo veći padding za isticanje */
+            border-radius: 0.5rem; /* Malo manje zaobljen od 50px da izgleda kao gumb, ne krug */
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: none;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.3rem; /* Malo veći font */
+            white-space: nowrap; /* Spriječava lomljenje teksta u više redaka */
+
+
+            /* Specifični crveni stilovi */
+            background-color: #C20000; /* Dublja, elegantna crvena */
+            color: #FFFFFF; /* Bijeli tekst za kontrast */
+            border: 1px solid transparent; /* Bez ruba za solidan izgled */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 0 20px rgba(194, 0, 0, 0.3); /* Crvena sjena */
+        }
+
+        #confirmSelectionButton:hover {
+            background-color: #9C0000; /* Tamnija crvena na hover */
+            transform: translateY(-3px); /* Blagi efekt podizanja */
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3), 0 0 30px rgba(194, 0, 0, 0.5);
+        }
+
+        /* Stil za X gumb za povratak */
+        #goBackToDecisionPage {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10000; /* Visok z-index, ali ispod kursora */
+            background-color: rgba(106,0,173,0.6);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 20px;
+            cursor: none; /* I ovaj gumb koristi prilagođeni kursor */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        #goBackToDecisionPage:hover {
+            background-color: rgba(74,0,120,0.8);
+            transform: scale(1.1);
+        }
+
+        /* NOVO: Stilovi za packageSelectionInfoModal (popup) */
+        /* Modal Overlay stilovi (generički, koristi se i za ovaj popup) */
+        .modal-overlay { /* Ovim stilom upravlja JS, samo je inicijalno skriven */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            display: flex; /* Centriranje sadržaja unutar overlay-a */
+            align-items: center; /* Vertikalno centriranje */
+            justify-content: center; /* Horizontalno centriranje */
+            z-index: 10010; /* Visok z-index, ali niži od prilagođenog kursora (10011) */
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Specifični stilovi za sadržaj novog popup-a */
+        #packageSelectionInfoModal .modal-content {
+            background: rgba(250, 245, 255, 0.95);
+            border: 1px solid rgba(160, 32, 240, 0.3);
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2);
+            padding: clamp(30px, 5vw, 50px);
+            max-width: 600px; /* Optimalna širina za poruku */
+            text-align: center;
+            border-radius: 12px; /* Zaobljeni rubovi kao i kod ostalih modala */
+            position: relative; /* Potrebno za pozicioniranje X gumba */
+            transform: scale(0.95); /* Početna transformacija za animaciju */
+            opacity: 0; /* Početna neprozirnost za animaciju */
+        }
+        #packageSelectionInfoModal.active .modal-content { /* Animacija pri otvaranju */
+             transform: scale(1);
+             opacity: 1;
+             transition: transform 0.4s 0.1s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.4s 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #packageSelectionInfoModal h2 { /* Prilagođeni stilovi za h2 unutar popup-a */
+            font-family: 'Anton', sans-serif;
+            color: #6A0DAD;
+            font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+            line-height: 1.2;
+            text-align: center; /* Osigurava centriranje naslova */
+        }
+        #packageSelectionInfoModal p { /* Stilovi za paragraf unutar popup-a */
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            font-size: clamp(1rem, 1.8vw, 1.2rem);
+            color: #4A0072;
+            line-height: 1.6;
+            margin-bottom: 1.5em; /* Povećaj razmak između paragrafa */
+            text-align: justify; /* Tekst poravnat obostrano */
+        }
+        #packageSelectionInfoModal .modal-close-button { /* Stilovi za X gumb unutar popup-a */
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: transparent;
+            border: none;
+            font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+            color: #A080C0;
+            cursor: none;
+            padding: 5px;
+            line-height: 1;
+            transition: color 0.2s ease, transform 0.2s ease;
+            z-index: 10; /* Mora biti viši od sadržaja popupa */
+        }
+        #packageSelectionInfoModal .modal-close-button:hover {
+            color: #6A0DAD;
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        @media (min-width: 768px) {
+            .md\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .md\:text-5xl { font-size: 3rem; }
+            .md\:text-4xl { font-size: 2.25rem; }
+            .md\:p-12 { padding: 3rem; }
+            .md\:gap-8 { gap: 2rem; }
+        }
+        @media (min-width: 1024px) {
+            .lg\:grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+            .lg\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+        }
+        @media (min-width: 640px) {
+             .sm\:grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        /* Responsivnost za vrlo male ekrane */
+        @media (max-width: 480px) {
+            .logo-text { font-size: clamp(2.8rem, 20vw, 10rem); }
+            .logo-subtext { font-size: clamp(0.9rem, 4vw, 2rem); letter-spacing: clamp(3px, 1vw, 8px); }
+            .decision-button { padding: 10px 20px; font-size: 0.9rem; }
+            .main-content-area { padding: 15px 20px; }
+            .modal-content { width: 95vw; padding: 15px; } /* Prilagodi padding za male ekrane */
+            .modal-scrollable-content { font-size: 0.85rem; padding-bottom: 0; } /* Ukloni padding-bottom, tekst je kratak */
+            .modal-content h2 { font-size: 1.3rem; }
+            .modal-action-button-container { bottom: 15px; left: 15px; right: 15px; padding-top: 10px; padding-bottom: 10px;}
+            .modal-action-button { font-size: 0.85rem; }
+            .modal-action-button .button-subtitle { font-size: 0.65rem; }
+            .video-player-container { width: 95vw; }
+            .video-modal-close-button { top: -10px; right: -10px; width: 30px; height: 30px; font-size: 16px; }
+            #goBackToDecisionPage { top: 10px; right: 10px; width: 30px; height: 30px; font-size: 16px; }
+            #packageSelectionInfoModal .modal-content {
+                padding: clamp(20px, 4vw, 30px);
+                max-height: 90vh; /* Dozvoli vertikalno skrolanje ako je sadržaj predug */
+                overflow-y: auto;
+            }
+            #packageSelectionInfoModal h2 { font-size: 1.3rem; margin-bottom: 15px; }
+            #packageSelectionInfoModal p { font-size: 0.9rem; margin-bottom: 1em; }
+            #packageSelectionInfoModal .modal-close-button { font-size: 1.5rem; top: 5px; right: 5px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- === POČETAK HTML-A ZA PRILAGOĐENI KURSOR === -->
+    <div class="cursor-dot-outline"></div>
+    <div class="cursor-dot"></div>
+    <!-- === KRAJ HTML-A ZA PRILAGOĐENI KURSOR === -->
+
+    <!-- X gumb za povratak na odluka.html -->
+    <button id="goBackToDecisionPage" title="Povratak na odluke">×</button>
+
+    <!-- Ostatak vašeg postojećeg sadržaja stranice inpack.html -->
+    <section id="investicija" class="py-10 relative overflow-hidden">
+        <div class="animated-background"><div class="bg-dots"></div><div class="glow" style="top: 40%; left: 50%;"></div></div>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-4 fade-in">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4">INVESTICIJSKI PAKETI</h2>
+                <div class="w-24 h-1 bg-purple-500 mx-auto mb-8"></div>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto"> Investirajte u projekt sa neograničenim potencijalom </p>
+            </div>
+
+          <!-- JEDINSTVENA PRILIKA Section -->
+          <section id="jedinstvena-prilika" class="pb-8 relative overflow-hidden">
+            <div class="animated-background"><div class="bg-dots"></div><div class="glow" style="top: 70%; left: 80%; opacity: 0.08;"></div></div>
+            <div class="container mx-auto px-6 relative z-10">
+                  <div class="fade-in glass-card p-8 md:p-12 mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6 text-purple-300 text-center">Jedinstvena prilika za investiranje i sigurno profitiranje</h2>
+                    <div class="text-gray-300 space-y-4 text-justify leading-relaxed">
+                        <p><strong>InFace Invest Group pokreće inicijativu za prikupljanje financijskih sredstava potrebnih za završetak razvoja inovativnih softverskih rješenja i aplikacija unutar projekta "SFT21 Business Concept", koji se nalazi u završnoj fazi izrade.</strong></p>
+                        <p>Naime, 2017. godine nakon skoro dvije decenije učenja, proučavanja i praćenja razvoja internet poslovanja i njegovog uticaja na gotovo svaki segment naših života, odlučili smo pokrenuti tehnološku kompaniju i stvaranje jedinstvene online zajednice koja ima za cilj povezati prvenstveno domaće mikro, male i srednje proizvođače, poduzetnike, obrtnike i trgovce zajedno sa potrošačima, kao najbitnijim čimbenicima u procesu proizvodnje, plasmana i prodaje proizvoda i usluga.</p>
+                        <p>Sama ideja i koncept poslovanja odmah su u samom startu privukli pažnju i interes velikog broja zainteresiranih članova, tako da smo polovinom 2019. godine, najavili službeni početak poslovanja.</p>
+                        <p>Međutim, nadolazeća i nametnuta nam covid kriza, direktno je utjecala na naše poslovanje a samim time i na naš razvoj. Uz probleme uzrokovane covid krizom, raznim zabranama i zatvaranjima, što se poklopilo sa negativnim i lažnim optužbama protiv vlasnika naše kompanije, sa pogrešnim i nekvalitetnim radom jednog dijela naših članova, zbog čega je došlo do usporavanja poslovanja a posljedično i do privremenog zaustavljanja i prekida daljnjeg razvoja projekta.</p>
+                        <p>Po pitanju lažnih i obmanjujućih, nikada i ničim dokazanih optužbi protiv vlasnika kompanije, koje su nam nanijele ogromnu, kako materijalnu tako i poslovnu štetu, protiv otpuštenih članova zbog uvreda i kleveta vlasnici kompanije pokrenuli su sudsku tužbu i kazneni progon pri Općinskom sudu u Puli.</p>
+                        <p>U proteklom periodu, detaljno smo analizirali naše proteklo poslovanje, uklonili nedostatke i usavršili svaki segment poslovnog koncepta, pripremili smo sve što je potrebno tako da smo spremni za nastavak očekivanog razvoja i samog poslovanja, što nestrpljivo isčekuje veliki broj naših vjernih članova, željnih sudjelovanja u stvaranju naše zajednice.</p>
+                        <p>S obzirom da se radi o globalnom projektu, koji u svakoj državi gdje bude prihvaćen i pokrenut, ima za cilj prvenstveno pomoć i podršku gospodarstvu države sa direktnim uticajem na pomoć i podršku lokalnog i regionalnog gospodarstva, nudimo Vam jedinstvenu priliku, da sukladno svojim mogućnostima uz malu, srednju ili veću investiciju, postanete dio jedne tehnološke kompanije u njenom nastanku kao i dio jedinstvene globalne franšizerske mreže odnosno zajednice, čiji potencijal jednostavno nema granica...</p>
+                    </div>
+                </div>
+
+                <div class="fade-in glass-card p-8 md:p-12" style="animation-delay: 0.2s;">
+                    <h3 class="text-2xl font-bold text-white text-center mb-8">Investicija je namijenjena za:</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+                        <div class="info-box">
+                            <div class="info-box-icon"><i class="fas fa-code"></i></div>
+                            <div class="info-box-content">
+                                <h5>Temeljni softver</h5>
+                                <p>Završetak izrade glavnog softvera za registraciju članova, raspodjelu sredstava i imtegraciju ostalih softvera i aplikacija</p>
+                            </div>
+                        </div>
+                        <div class="info-box">
+                            <div class="info-box-icon"><i class="fas fa-users"></i></div>
+                            <div class="info-box-content">
+                                <h5>Društvena mreža</h5>
+                                <p>Završetak izrade softvera i aplikacije za poslovno-društvenu mrežu "SFnet"</p>
+                            </div>
+                        </div>
+                        <div class="info-box">
+                            <div class="info-box-icon"><i class="fas fa-shopping-cart"></i></div>
+                            <div class="info-box-content">
+                                <h5>Webshop</h5>
+                                <p>Završetak izrade softvera i aplikacije za webshop "SFshop"</p>
+                            </div>
+                        </div>
+                         <div class="info-box">
+                            <div class="info-box-icon"><i class="fas fa-briefcase"></i></div>
+                            <div class="info-box-content">
+                                <h5>Franšizni model</h5>
+                                <p>Pokretanje franšiznog poslovnog modela "SFT21 Business Concept"</p>
+                            </div>
+                        </div>
+                        <div class="info-box" id="dev-cost-info-box">
+                            <div class="info-box-icon"><i class="fas fa-briefcase"></i></div>
+                            <div class="info-box-content">
+                                <h5>Troškovi razvoja</h5>
+                                <p>Za operativno, administrativne i ostale tekuće troškove razvoja te marketinške i infrastrukturne potrebe vezane za projekt SFT21.</p>
+                            </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- IZMIJENJENO OVDJE: py-16 promijenjeno u pt-8 pb-16 -->
+        <section id="prednosti-investitori" class="pt-8 pb-16 relative overflow-hidden">
+            <div class="animated-background">
+                <div class="bg-dots"></div>
+                <div class="glow" style="top: 25%; left: 80%; opacity: 0.06;"></div>
+            </div>
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="text-center mb-16 fade-in">
+                    <h2 class="text-3xl md:text-5xl font-bold mb-4">Prednosti za investitore</h2>
+                    <div class="w-24 h-1 bg-purple-500 mx-auto mb-8"></div>
+                    <p class="text-xl text-gray-300 max-w-4xl mx-auto"> Sudjelovanjem u SFT21 projektu ne samo da imate potencijal povećati vrijednost svoje investicije i ostvariti materijalne dobitke, već dobivate i pristup nizu ekskluzivnih pogodnosti: </p>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 fade-in" style="animation-delay: 0.2s;">
+                    <div class="info-box">
+                        <div class="info-box-icon"><i class="fas fa-user-circle"></i></div>
+                        <div class="info-box-content">
+                            <h5>Korisnički račun</h5>
+                            <p>Otvoreni korisnički račun unutar kompanije, što vam omogućava daljnje sudjelovanje u razvoju zajednice.</p>
+                        </div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-box-icon"><i class="fas fa-users"></i></div>
+                        <div class="info-box-content">
+                            <h5>Društvena mreža</h5>
+                            <p>Pravo na kreiranje vlastite društvene mreže na stranicama portala kompanije, čime postajete kreator svoje digitalne zajednice.</p>
+                        </div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-box-icon"><i class="fas fa-store"></i></div>
+                        <div class="info-box-content">
+                            <h5>Webshop</h5>
+                            <p>Pravo na kreiranje vlastitog webshopa, što otvara vrata vašem online poslovanju i povećava vaše poslovne mogućnosti.</p>
+                        </div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-box-icon"><i class="fas fa-credit-card"></i></div>
+                        <div class="info-box-content">
+                            <h5>Payment Gateway</h5>
+                            <p>Pravo na korištenje kompanijskog "payment gateway-a", što vam omogućava jednostavne i sigurne transakcije unutar zajednice.</p>
+                        </div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-box-icon"><i class="fas fa-envelope"></i></div>
+                        <div class="info-box-content">
+                            <h5>Interni mailbox</h5>
+                            <p>Pravo na korištenje internog mailbox-a, za sigurnu i zaštićenu privatnu i poslovnu komunikaciju između korisnika zajednice.</p>
+                        </div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-box-icon"><i class="fas fa-lightbulb"></i></div>
+                        <div class="info-box-content">
+                            <h5>Pristup informacijama</h5>
+                            <p>Pravo na pristup poslovnim informacijama u ranoj fazi razvoja svih naših i partnerskih budućih inovativnih projekata uz mogućnost sudjelovanja u istima.</p>
+                        </div>
+                    </div>
+                    <div class="info-box">
+                        <div class="info-box-icon"><i class="fas fa-handshake"></i></div>
+                        <div class="info-box-content">
+                            <h5>Franšizerski status</h5>
+                            <p>Mogućnost nadogradnje računa na franšizerski status, čime dodatno povećavate svoje poslovne prilike i zaradu.</p>
+                        </div>
+                    </div>
+                     <div class="info-box">
+                        <div class="info-box-icon"><i class="fas fa-gift"></i></div>
+                        <div class="info-box-content">
+                            <h5>Nagradne igre</h5>
+                            <p>Pravo sudjelovanja u besplatnim nagradnim igrama u organizaciji kompanije.</p>
+                        </div>
+                    </div>
+                </div>
+                 <div class="investor-note mt-6 mb-6 px-4 text-gray-300 text-sm italic leading-relaxed text-center fade-in" style="animation-delay: 0.3s;">
+                    <p>*Napomena: Navedene pogodnosti su na dobrovoljnoj bazi, tako da Vi kao investitor, ukoliko ne želite, ne morate koristiti iste, možete biti i do kraja ostati pasivni investitori, bez ikakvih obaveza prema kompaniji... uz mogućnost da aktivirate nadogradnju svog statusa, naknadno kada god poželite.</p>
+                </div>
+            </div>
+        </section>
+
+        <div id="odaberi-paket-naslov" class="text-center mt-16 mb-12 fade-in">
+            <h2 class="text-3xl md:text-5xl font-bold">Odaberi investicijski paket</h2>
+            <div class="w-24 h-1 bg-purple-500 mx-auto mt-4"></div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="ip-card fade-in" style="animation-delay: 0.1s;">
+                <div class="ip-card-header"><h4>IP1: 100 €</h4></div>
+                <div class="ip-card-body">
+                    <p><span class="label">Očekivana dobit 50%:</span> <span class="value">150 €</span><span class="duration">(unutar 3 godine)</span></p>
+                    <p><span class="label">Bonus zarada:</span> <span class="value">350 €</span><span class="duration">(na neodređeno vrijeme)</span></p>
+                    <p><span class="label">Ukupna zarada:</span> <span class="value">500 €</span></p>
+                    <p><span class="label">Povrat ulaganja:</span> <span class="value">x5</span></p>
+                </div>
+                <div class="ip-card-footer"><a href="#" class="btn-primary select-package-btn" data-package="IP1">Odaberi paket</a></div>
+            </div>
+             <div class="ip-card fade-in" style="animation-delay: 0.2s;">
+                <div class="ip-card-header"><h4>IP2: 200 €</h4></div>
+                <div class="ip-card-body">
+                     <p><span class="label">Očekivana dobit 55%:</span> <span class="value">310 €</span><span class="duration">(unutar 3 godine)</span></p>
+                     <p><span class="label">Bonus zarada:</span> <span class="value">690 €</span><span class="duration">(na neodređeno vrijeme)</span></p>
+                     <p><span class="label">Ukupna zarada:</span> <span class="value">1.000 €</span></p>
+                     <p><span class="label">Povrat ulaganja:</span> <span class="value">x5</span></p>
+                 </div>
+                 <div class="ip-card-footer"><a href="#" class="btn-primary select-package-btn" data-package="IP2">Odaberi paket</a></div>
+             </div>
+             <div class="ip-card fade-in" style="animation-delay: 0.3s;">
+                 <div class="ip-card-header"><h4>IP3: 500 €</h4></div>
+                 <div class="ip-card-body">
+                     <p><span class="label">Očekivana dobit 60%:</span> <span class="value">800 €</span><span class="duration">(unutar 3 godine)</span></p>
+                     <p><span class="label">Bonus zarada:</span> <span class="value">1.700 €</span><span class="duration">(na neodređeno vrijeme)</span></p>
+                     <p><span class="label">Ukupna zarada:</span> <span class="value">2.500 €</span></p>
+                     <p><span class="label">Povrat ulaganja:</span> <span class="value">x5</span></p>
+                </div>
+                 <div class="ip-card-footer"><a href="#" class="btn-primary select-package-btn" data-package="IP3">Odaberi paket</a></div>
+             </div>
+            <div class="ip-card fade-in" style="animation-delay: 0.4s;">
+                <div class="ip-card-header"><h4>IP4: 1.000 €</h4></div>
+                <div class="ip-card-body">
+                    <p><span class="label">Očekivana dobit 70%:</span> <span class="value">1.700 €</span><span class="duration">(unutar 3 godine)</span></p>
+                    <p><span class="label">Bonus zarada:</span> <span class="value">4.300 €</span><span class="duration">(na neodređeno vrijeme)</span></p>
+                    <p><span class="label">Ukupna zarada:</span> <span class="value">6.000 €</span></p>
+                    <p><span class="label">Povrat ulaganja:</span> <span class="value">x6</span></p>
+                </div>
+                <div class="ip-card-footer"><a href="#" class="btn-primary select-package-btn" data-package="IP4">Odaberi paket</a></div>
+            </div>
+             <div class="ip-card fade-in" style="animation-delay: 0.5s;">
+                 <div class="ip-card-header"><h4>IP5: 1.500 €</h4></div>
+                 <div class="ip-card-body">
+                    <p><span class="label">Očekivana dobit 80%:</span> <span class="value">2.700 €</span><span class="duration">(unutar 3 godine)</span></p>
+                    <p><span class="label">Bonus zarada:</span> <span class="value">6.300 €</span><span class="duration">(na neodređeno vrijeme)</span></p>
+                    <p><span class="label">Ukupna zarada:</span> <span class="value">9.000 €</span></p>
+                    <p><span class="label">Povrat ulaganja:</span> <span class="value">x6</span></p>
+                </div>
+                <div class="ip-card-footer"><a href="#" class="btn-primary select-package-btn" data-package="IP5">Odaberi paket</a></div>
+             </div>
+             <div class="ip-card fade-in" style="animation-delay: 0.6s;">
+                 <div class="ip-card-header"><h4>IP6: 2.100 €</h4></div>
+                 <div class="ip-card-body">
+                    <p><span class="label">Očekivana dobit (90%):</span> <span class="value">3.990 €</span><span class="duration">(unutar 3 godine)</span></p>
+                    <p><span class="label">Bonus zarada:</span> <span class="value">10.710 €</span><span class="duration">(na neodređeno vrijeme)</span></p>
+                    <p><span class="label">Ukupna zarada:</span> <span class="value">14.700 €</span></p>
+                    <p><span class="label">Povrat ulaganja:</span> <span class="value">x7</span></p>
+                </div>
+                 <div class="ip-card-footer"><a href="#" class="btn-primary select-package-btn" data-package="IP6">Odaberi paket</a></div>
+             </div>
+         </div>
+         <div id="individual-package" class="container mx-auto px-6 relative z-10 mt-12 fade-in" style="animation-delay: 0.7s;">
+            <div class="glass-card max-w-5xl mx-auto ip-wide-card overflow-hidden">
+                <div class="ip-wide-card-header"> <h3 class="ip-wide-card-header-title">IP7: Individualni paket</h3> </div>
+                <div class="p-8 md:p-12">
+                    <p class="text-gray-300 text-center leading-relaxed mb-6"> Odaberite opciju ulaganja koja vam najviše odgovara. </p>
+                    <div class="btn-group">
+                        <button id="ip7-do-10k" class="btn-primary">Do 10.000 €</button>
+                        <button id="ip7-veci-iznos" class="btn-primary">Veći iznos</button>
+                    </div>
+                    <div id="ip7-amount-input-container" class="amount-input-container">
+                       <label for="ip7-amount-input">Unesite iznos ulaganja:</label>
+                        <div class="amount-input-wrapper">
+                           <input type="number" id="ip7-amount-input" class="amount-input" placeholder="Min. 2200 €" step="1" min="2200" max="10000">
+                            <span class="currency-symbol">€</span>
+                        </div>
+                         <div class="input-buttons flex justify-center gap-4 mt-4">
+                           <button id="ip7-amount-confirm" class="btn-primary">POTVRDI</button>
+                           <button id="ip7-amount-cancel" class="btn-outline">OTKAŽI</button>
+                        </div>
+                    </div>
+                    <div class="text-gray-300 text-center mt-6 leading-relaxed">
+                        <p>Očekivana dobit u periodu od 3 god: <strong>100%</strong></p>
+                        <p>Ukupna kumulativna dobit: vaš iznos x7, kroz neodređeni vremenski period</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="objasnjenje-zarade" class="py-16 relative">
+        <div class="animated-background"><div class="bg-dots"></div><div class="glow" style="top: 10%; left: 10%; opacity:0.05;"></div></div>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-12 fade-in">
+                <h2 class="text-3xl md:text-5xl font-bold">Objašnjenje zarade na osnovi ulaganja u Investicijske pakete</h2>
+                <div class="w-24 h-1 bg-purple-500 mx-auto mt-4"></div>
+            </div>
+
+            <div class="glass-card max-w-5xl mx-auto p-8 md:p-12 fade-in">
+                <div class="space-y-4 text-gray-300 text-justify leading-relaxed">
+                    <p>Ulaganjem u odabrani investicijski paket imate pravo na <strong>OČEKIVANI PRINOS</strong> i <strong>BONUS ZARADU</strong>.</p>
+                    <p>Očekivani prinos je iznos koji bi trebali dobiti u roku od 3 godine dok je Bonus zarada iznos koji bi trebali početi dobivati po isplati Očekivanog prinosa.</p>
+
+                    <h4 class="text-xl font-semibold mt-6 mb-2 text-purple-300" style="text-align: left; margin-left:0;">Modeli povrata uloženog iznosa, prinosa i bonus zarade</h4>
+                    <p>Kako bi u roku od 3 godine od dana potpisivanja Ugovora (ili prije po mogućnosti) vratili investitorima glavnicu i pripadajući očekivani prinos, po završetku neophodnih softvera i aplikacija te puštanjem u rad franšiznog poslovanja SFT21 Business Concept, Kompanija će u svakom obračunskom periodu (koji traju 28 dana) odvajati u tkz. Prvi investicijski račun;</p>
+                    <ul style="list-style-type: disc; padding-left: 20px; margin-left:20px;">
+                        <li>minimalno <strong>50%</strong> mjesečnog profita sa kompanijskog računa</li>
+                        <li><strong>100%</strong> profita kojeg generiraju Ambasadorske pozicije (32 računa sa 5. razine SFalgoritma)</li>
+                        <li><strong>100%</strong> profita kojeg generiraju prazne Državne pozicije (oko 170 računa sa 6. i 7. razine SFalgoritma)</li>
+                    </ul>
+                    <p>Osim navedenog, investitor prilikom registracije i ulaganja u SFT21 projekt otvara Investicijski račun koji zauzima mjesto u SFalgoritmu, sa kojim sudjeluje u raspodjeli sredstava. Sredstva dobivena po Prijateljskom bonusu odlaze u Novčanik investitora u svrhu što prije isplate očekivanog prinosa. </p>
+                    <p>Po isplati glavnice i očekivane dobiti, kompanija će nastaviti svakog obračunskog perioda (28 dana) odvajati minimalno 21% profita, sve dok ne isplati ukupnu kumulativnu Bonus zaradu.</p>
+                    <p>Ukoliko razvoj ili druge okolnosti dovedu do mogućnosti brže isplate ukupne kumulativne Bonus zarade kompanija će odvajati i više od 21 % ili će eventualnom prodajom udjela u vlasništvu odmah isplatiti Očekivanu dobit i Bonus zaradu.</p>
+                    <p>Svaki investitor dobiva mjesečnu dobit u visini postotka sukladno kupljenom investicijskom paketu.</p>
+                    <p>Investitor ima pravo, prema odredbama Investicijskog računa, prodati svoj račun drugoj osobi pod uvjetom da je otkup računa ponajprije ponudio kompaniji, koja se usuglasila sa prodajom istoga drugoj osobi.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NOVI DIO: VAŽNA NAPOMENA ZA POSTOJEĆE ČLANOVE -->
+    <section id="vazna-napomena-clanovi" class="py-16 relative overflow-hidden">
+        <div class="animated-background">
+            <div class="glow" style="top: 20%; left: 90%; opacity: 0.04;"></div>
+            <div class="glow" style="bottom: 10%; left: 5%; opacity: 0.03;"></div>
+        </div>
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="glass-card max-w-5xl mx-auto p-8 md:p-12 fade-in important-note-card">
+                <h3 class="text-2xl md:text-3xl font-bold mb-6 text-purple-300 text-center">
+                    VAŽNA NAPOMENA ZA POSTOJEĆE ČLANOVE PRIJE DONOŠENJA ODLUKE O NASTAVKU POSLOVANJA
+                </h3>
+                <div class="text-gray-300 space-y-4 text-justify leading-relaxed">
+                    <p>Postojeći registrirani članovi imaju mogućnost nastaviti poslovanje bez obaveze kupovine novog startnog paketa kao i bez obaveze ulaganja u Investicijske pakete.</p>
+                    <p>Ukoliko odlučite nastaviti poslovanje uz ulaganje u Investicijski paket imate dvije mogućnosti;</p>
+                    <ul style="list-style-type: disc; padding-left: 20px; margin-left:20px;">
+                        <li>Nastaviti poslovanje kao <strong>AKTIVAN ČLAN “SFinfra“</strong> (investitor/franšizer) sa SPfree startnim paketom, uz ulaganje kojom prilikom vam se iznos odabranog Investicijskog paketa umanjuje za iznos investicije iz starog sistema.</li>
+                        <li>Nastaviti poslovanje kao <strong>PASIVAN ČLAN “SFinvestitor“</strong> sa investicijskim računom, kojom prilikom vam se iznos ulaganja odabranog Investicijskog paketa umanjuje za iznos investicije iz starog sistema.</li>
+                    </ul>
+                    <p>Klikom na gumb “DONESI ODLUKU“ na dnu ove stranice imate mogućnost opoznati se sa detaljima odluke o nastavku poslovanja.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- KRAJ NOVOG DIJELA -->
+        <section id="zasto-investirati" class="py-16 relative overflow-hidden">
+            <div class="animated-background">
+                <div class="bg-dots"></div>
+                <div class="glow" style="top: 50%; left: 15%; opacity: 0.05;"></div>
+            </div>
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="text-center mb-16 fade-in">
+                    <h2 class="text-3xl md:text-5xl font-bold mb-4">Zašto investirati u SFT21 projekt</h2>
+                    <div class="w-24 h-1 bg-purple-500 mx-auto mb-8"></div>
+                    <p class="text-xl text-gray-300 max-w-4xl mx-auto text-justify">
+                        Očekivano povećanje vrijednosti vaše investicije, u periodu do tri godine, prema procjenama i realnim projekcijama kompanije, može doseći od 50% do 100% veće zarade (sukladno odabranim investicijskim paketima).
+                    </p>
+                </div>
+                <div class="max-w-5xl mx-auto space-y-10 fade-in" style="animation-delay: 0.2s;">
+                    <div class="border-l-4 border-purple-500 pl-6">
+                        <p class="text-gray-200 text-lg leading-relaxed font-semibold text-justify">
+                            MI SMO SVJESNI POTENCIJALA NAŠEG SISTEMA POSLOVANJA KAO I VRIJEDNOSTI ONLINE ZAJEDNICE KOJU STVARAMO, ALI LAGALI BI KADA BI VAM GARANTIRALI VELIKU ILI BRZU ZARADU I SIGURAN USPJEH, S OBZIROM NA VARIJABLE BUDUĆEG POSLOVANJA KOMPANIJE I MNOGE DRUGE PRILIKE ODNOSNO NEPRILIKE NA KOJE KOMPANIJA NE MOŽE UTJECATI NITI IH MOŽE PREDVIDJETI.
+                        </p>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl md:text-3xl font-bold mb-6 text-fluorescent-green">Brzi rast i globalni potencijal</h3>
+                        <div class="space-y-4 text-gray-300 text-lg leading-relaxed text-justify">
+                            <p>
+                                Investicija u projekt SFT21 nije samo financijska prilika – to je ulaganje u viziju. Kompanija je postavila ambiciozan cilj da postane najbrže rastuća kompanija u industriji društvenih mreža integriranih sa online trgovinom.
+                            </p>
+                            <p>
+                                Ovaj model poslovanja prvi je te vrste na globalnoj razini, što pruža neusporedive mogućnosti za rast. Sinergija između franšizera, članova, korisnika, vjernih kupaca, potrošača, proizvođača i trgovaca stvara snažnu platformu za eksponencijalno širenje, dok su investitori u ovoj fazi razvoja ključni dio tog procesa.
+                            </p>
+                        </div>
+                    </div>
+                    <blockquote class="border-l-4 border-purple-500 pl-6 italic">
+                        <p class="text-gray-200 text-xl leading-relaxed text-justify">
+                            "Razmišljaj globalno djeluj lokalno" – budi i Ti dio zajednice i projekta koji obećava globalnu ekspanziju utemeljenu na jakim lokalnim i regionalnim korijenima sa naglaskom na mikroekonomiju.
+                        </p>
+                    </blockquote>
+                </div>
+            </div>
+        </section>
+
+        <section id="odluka-na-vama" class="py-20 relative overflow-hidden">
+            <div class="animated-background">
+                <div class="bg-dots"></div>
+                 <div class="glow" style="top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60vw; height: 40vh; opacity: 0.05;"></div>
+            </div>
+            <div class="container mx-auto px-6 relative z-10 text-center">
+                <div class="fade-in max-w-3xl mx-auto">
+                    <h2 class="text-3xl md:text-5xl font-bold mb-8 text-fluorescent-green">Odluka je na Vama</h2>
+                    <p class="text-xl text-gray-300 mb-6 leading-relaxed">
+                        Pokrenuli smo projekt SFT21, sa najboljim namjerama, časno, pošteno i prije svega transparentno...<br>
+                        Mi znamo i vjerujemo u potencijal i moć zajednice koju stvaramo kao i njezinu društvenu vrijednost.
+                    </p>
+                    <p class="text-xl text-gray-300 mb-10 leading-relaxed">
+                        Sa Vama želimo podijeliti našu viziju kako bi i Vi prepoznali priliku koja se pruža jednom u životu – priliku da zajedno izgradimo <strong>TEHNOLOŠKU KOMPANIJU</strong> i <strong>ONLINE ZAJEDNICU</strong> u vlasništvu njenih investitora, članova korisnika i franšizera.
+                    </p>
+                    <a href="#odaberi-paket-naslov" class="btn-primary inline-block text-lg px-8 py-4 mb-12">
+                        Izaberi investicijski paket
+                    </a>
+                    <h3 class="text-2xl md:text-4xl font-bold text-fluorescent-green">
+                        Dobrodošli u SFTeam!
+                    </h3>
+                </div>
+            </div>
+        </section>
+
+        <section id="final-decision" class="py-10" style="background-color: #FFFFFF;">
+            <div class="container mx-auto px-6 text-center">
+                <button id="goToIzborButton" class="btn-primary text-xl px-10 py-5">DONESI ODLUKU</button>
+            </div>
+        </section>
+
+    <!-- NOVI POPUP ZA INFORMACIJE O ODABIRU PAKETA -->
+    <div id="packageSelectionInfoModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-button" id="closePackageSelectionInfoModalButton">×</button>
+            <div class="modal-scrollable-content" style="padding-bottom: 0;">
+                <h2 style="margin-bottom: 25px;">Zahvaljujemo se na odabiru Investicijskog paketa.</h2>
+                <p>Prije konačne potvrde odabira, nakon što pročitate tekst, na dnu ove stranice kliknite na dugme "DONESI ODLUKU".</p>
+                <p>Na slijedećoj stranici izaberite startni paket odnosno iznos sa kojim ste bili započeli poslovanje,
+                nakon čega ćete izabrati opciju sa kojom želite nastaviti SFT21 Business Concept.</p>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // === POČETAK JS-A ZA PRILAGOĐENI KURSOR (preuzeto s odluka.html) ===
+            const cursorDot = document.querySelector(".cursor-dot");
+            const cursorDotOutline = document.querySelector(".cursor-dot-outline");
+
+            function updateInteractiveElements() {
+                // Selektiraj sve elemente na koje želimo da kursor reagira
+                // To uključuje gumbe, linkove i inpute
+                const interactiveElements = document.querySelectorAll(
+                    'button, a, input[type="number"], input[type="text"], select, textarea, [data-interactive]'
+                );
+                interactiveElements.forEach(el => {
+                    el.removeEventListener('mouseenter', handleMouseEnter);
+                    el.removeEventListener('mouseleave', handleMouseLeave);
+                    el.addEventListener('mouseenter', handleMouseEnter);
+                    el.addEventListener('mouseleave', handleMouseLeave);
+                    el.style.cursor = 'none'; // Osiguraj da i ovi elementi nemaju defaultni kursor
+                });
+            }
+
+            function handleMouseEnter() {
+                if (cursorDot && cursorDotOutline) {
+                    cursorDot.style.transform = 'translate(-50%, -50%) scale(1.5)';
+                    cursorDotOutline.style.transform = 'translate(-50%, -50%) scale(1.6)';
+                    cursorDotOutline.style.backgroundColor = 'rgba(160, 32, 240, 0.3)';
+                    cursorDotOutline.style.width = '35px';
+                    cursorDotOutline.style.height = '35px';
+                }
+            }
+
+            function handleMouseLeave() {
+                 if (cursorDot && cursorDotOutline) {
+                    cursorDot.style.transform = 'translate(-50%, -50%) scale(1)';
+                    cursorDotOutline.style.transform = 'translate(-50%, -50%) scale(1)';
+                    cursorDotOutline.style.backgroundColor = 'rgba(160, 32, 240, 0.2)';
+                    cursorDotOutline.style.width = '30px';
+                    cursorDotOutline.style.height = '30px';
+                }
+            }
+
+            window.addEventListener("mousemove", function (e) {
+                if (cursorDot && cursorDotOutline) {
+                    const posX = e.clientX;
+                    const posY = e.clientY;
+                    cursorDot.style.left = `${posX}px`;
+                    cursorDot.style.top = `${posY}px`;
+                    cursorDotOutline.animate({ left: `${posX}px`, top: `${posY}px` }, { duration: 400, fill: "forwards", easing: "ease-out" });
+                }
+            });
+            // === KRAJ JS-A ZA PRILAGOĐENI KURSOR ===
+
+
+            const ip7Do10kButton = document.getElementById('ip7-do-10k');
+            const ip7VeciIznosButton = document.getElementById('ip7-veci-iznos');
+            const amountInputContainer = document.getElementById('ip7-amount-input-container');
+            const amountInput = document.getElementById('ip7-amount-input');
+            const confirmButton = document.getElementById('ip7-amount-confirm');
+            const cancelButton = document.getElementById('ip7-amount-cancel');
+            const goBackButton = document.getElementById('goBackToDecisionPage');
+            const goToIzborButton = document.getElementById('goToIzborButton');
+            const selectPackageButtons = document.querySelectorAll('.ip-card-footer .btn-primary'); // Svi gumbi "Odaberi paket" (IP1-IP6)
+
+            // Novi elementi za popup
+            const packageSelectionInfoModal = document.getElementById('packageSelectionInfoModal');
+            const closePackageSelectionInfoModalButton = document.getElementById('closePackageSelectionInfoModalButton');
+
+
+            function openPackageSelectionInfoModal() {
+                packageSelectionInfoModal.classList.add("active");
+                document.body.classList.add('modal-open'); // Dodaj klasu za spriječavanje skrolanja
+                updateInteractiveElements(); // Ažuriraj interaktivne elemente za kursor
+            }
+
+            function closePackageSelectionInfoModal() {
+                packageSelectionInfoModal.classList.remove("active");
+                document.body.classList.remove('modal-open'); // Ukloni klasu za omogućavanje skrolanja
+                updateInteractiveElements(); // Ažuriraj interaktivne elemente za kursor
+            }
+
+            // Event listeneri za gumb "Odaberi paket" (IP1-IP6)
+            selectPackageButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault(); // Spriječi skrolanje na vrh stranice zbog href="#"
+                    openPackageSelectionInfoModal();
+                });
+            });
+
+            if (ip7Do10kButton) {
+                ip7Do10kButton.addEventListener('click', function() {
+                    if (amountInputContainer) amountInputContainer.style.display = 'block';
+                    if (amountInput) {
+                        amountInput.placeholder = "Min. 2200 €";
+                        amountInput.min = "2200";
+                        amountInput.max = "10000";
+                        amountInput.value = "";
+                    }
+                    updateInteractiveElements();
+                });
+            }
+
+            if (ip7VeciIznosButton) {
+                ip7VeciIznosButton.addEventListener('click', function() {
+                    if (amountInputContainer) amountInputContainer.style.display = 'block';
+                    if (amountInput) {
+                        amountInput.placeholder = "Min. 10001 €";
+                        amountInput.min = "10001";
+                        amountInput.removeAttribute('max');
+                        amountInput.value = "";
+                    }
+                    updateInteractiveElements();
+                });
+            }
+
+            if (cancelButton) {
+                cancelButton.addEventListener('click', function() {
+                    if (amountInputContainer) amountInputContainer.style.display = 'none';
+                    if (amountInput) amountInput.value = "";
+                    updateInteractiveElements();
+                });
+            }
+
+            if (confirmButton) {
+                confirmButton.addEventListener('click', function() {
+                    const amount = parseFloat(amountInput.value);
+                    const minAmount = parseFloat(amountInput.min);
+                    const maxAmount = amountInput.hasAttribute('max') ? parseFloat(amountInput.max) : Infinity;
+
+                    if (isNaN(amount) || amount < minAmount || amount > maxAmount) {
+                        alert(`Molimo unesite ispravan iznos unutar dozvoljenog raspona (${minAmount} €${maxAmount !== Infinity ? ' - ' + maxAmount + ' €' : ''}).`);
+                        amountInput.focus();
+                        return; // VAŽNO: Zaustavi izvršavanje ako validacija ne prođe
+                    }
+                    // Uklonjen alert(), sada se otvara modal
+                    if (amountInputContainer) amountInputContainer.style.display = 'none';
+                    if (amountInput) amountInput.value = "";
+                    updateInteractiveElements();
+                    openPackageSelectionInfoModal(); // Otvori novi popup nakon potvrde IP7
+                });
+            }
+
+            if (goBackButton) {
+                goBackButton.addEventListener('click', function() {
+                    window.location.href = 'odluka.html#infoModal';
+                });
+            }
+
+            if (goToIzborButton) {
+                goToIzborButton.addEventListener('click', function() {
+                    window.location.href = 'izbor.html';
+                });
+            }
+
+            // Event listener za zatvaranje novog popup-a
+            if (closePackageSelectionInfoModalButton) {
+                closePackageSelectionInfoModalButton.addEventListener('click', closePackageSelectionInfoModal);
+            }
+
+            // ESC tipka za zatvaranje novog popup-a
+            document.addEventListener('keydown', (event) => {
+                if (event.key === 'Escape') {
+                    if (packageSelectionInfoModal.classList.contains('active')) {
+                        closePackageSelectionInfoModal();
+                    }
+                }
+            });
+
+
+            const fadeElements = document.querySelectorAll('.fade-in');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animationPlayState = 'running';
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+
+            fadeElements.forEach(el => {
+                el.style.animationPlayState = 'paused';
+                observer.observe(el);
+            });
+
+            updateInteractiveElements(); // Inicijalno pozivanje za sve elemente na stranici
+        });
+    </script>
+</body>
+</html>
