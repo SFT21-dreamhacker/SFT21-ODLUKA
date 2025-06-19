@@ -323,21 +323,49 @@
         }
         .video-player-container {
             position: relative;
-            width: clamp(300px, 70vw, 1000px);
-            max-width: 80%;
+            width: clamp(300px, 85vw, 1200px);
+            max-width: 90%;
             aspect-ratio: 16/9;
             background: #10051a;
             border-radius: 10px;
-            overflow: visible;
+            overflow: hidden;
             box-shadow: 0 10px 40px rgba(138, 43, 226, 0.2), 0 0 15px rgba(0, 0, 0, 0.1);
             opacity: 0;
             transform: scale(0.9) translateY(20px);
             transition: opacity 0.5s 0.1s cubic-bezier(0.4, 0, 0.2, 1), transform 0.5s 0.1s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .modal-overlay.active .video-player-container { opacity: 1; transform: scale(1) translateY(0); }
-        .video-wrapper { width: 100%; height: 100%; position: relative; z-index: 1; border-radius: 10px; overflow: hidden; }
-        .video-wrapper::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 2px solid rgba(160, 32, 240, 0.5); border-radius: inherit; box-shadow: 0 0 8px rgba(160, 32, 240, 0.4), 0 0 15px rgba(200, 150, 255, 0.2); pointer-events: none; z-index: 2; }
-        #presentationVideo { display: block; width: 100%; height: 100%; border-radius: 8px; object-fit: contain; }
+        .video-wrapper { 
+            width: 100%; 
+            height: 100%; 
+            position: relative; 
+            z-index: 1; 
+            border-radius: 10px; 
+            overflow: hidden; 
+        }
+        .video-wrapper::before { 
+            content: ''; 
+            position: absolute; 
+            top: 0; 
+            left: 0; 
+            right: 0; 
+            bottom: 0; 
+            border: 2px solid rgba(160, 32, 240, 0.5); 
+            border-radius: inherit; 
+            box-shadow: 0 0 8px rgba(160, 32, 240, 0.4), 0 0 15px rgba(200, 150, 255, 0.2); 
+            pointer-events: none; 
+            z-index: 2; 
+        }
+        
+        /* YouTube iframe stilovi */
+        #presentationVideo { 
+            display: block; 
+            width: 100%; 
+            height: 100%; 
+            border-radius: 8px; 
+            border: none;
+        }
+        
         .video-glow-border {
             position: absolute; top: -20px; left: -20px; right: -20px; bottom: -20px; border-radius: 30px;
             box-shadow: 0 0 30px 10px rgba(138, 43, 226, 0.15), 0 0 50px 20px rgba(160, 32, 240, 0.1), 0 0 70px 30px rgba(180, 80, 250, 0.08);
@@ -377,11 +405,6 @@
         }
     </style>
 </head>
-<div style="text-align: center; margin: 40px 0; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 15px;">
-    <h2 style="color: #FFFF00; margin-bottom: 20px;">📹 SFT21 Business Concept</h2>
-    <div style="position: relative; width: 100%; max-width: 800px; margin: 0 auto;">
-</div>
-    
 <body>
     <div class="cursor-dot-outline"></div>
     <div class="cursor-dot"></div>
@@ -406,28 +429,29 @@
                 <h2>Poštovani franšizeri,</h2>
                 <p>Prije svega iskreno i od srca veliki pozdrav svima.</p>
                 <p>Evo nakon gotovo tri pune godine od privremenog prekida poslovanja ponovo se vraćamo sa nadom da ćemo nastaviti tamo gdje smo, ne našom krivnjom, bili prisiljeni stati.</p>
-                <p>Vrlo je važno podsjetiti se, da smo 2018. godine registrirali kompaniju InFace Invest Group LTD, sa kojom smo 2019. godine pokrenuli poslovni koncept časno, pošteno i transparentno sa najboljim namjerama stvaranja jedinstvene online zajednice kroz franšizni model poslovanja, u kojem je bilo zamišljeno da se razvoj kompanije i cjelokupne zajednice (što uključuje razvoj softvera i aplikacija, pokretanje franšiznog poslovnog modela pod nazivom “SFT21 Business Concept“, operativne, administrativne i ostale tekuće troškove razvoja te marketinške i infrastrukturne potrebe vezane za projekt SFT21) financira od zarade koja će dolaziti od prodaje franšize našim članovima i njihovim nadogradnjama, kao i od investitora, većih ili manjih.</p>
+                <p>Vrlo je važno podsjetiti se, da smo 2018. godine registrirali kompaniju InFace Invest Group LTD, sa kojom smo 2019. godine pokrenuli poslovni koncept časno, pošteno i transparentno sa najboljim namjerama stvaranja jedinstvene online zajednice kroz franšizni model poslovanja, u kojem je bilo zamišljeno da se razvoj kompanije i cjelokupne zajednice (što uključuje razvoj softvera i aplikacija, pokretanje franšiznog poslovnog modela pod nazivom "SFT21 Business Concept", operativne, administrativne i ostale tekuće troškove razvoja te marketinške i infrastrukturne potrebe vezane za projekt SFT21) financira od zarade koja će dolaziti od prodaje franšize našim članovima i njihovim nadogradnjama, kao i od investitora, većih ili manjih.</p>
                 <p>Na žalost, spletom za nas neugodnih okolnosti, bili smo prisiljeni, zbog nemogućnosti plaćanja troškova održavanja razvoja i funkcioniranja kompanije, postepeno otkazivati započeti razvoj sve do nedavnog skidanja svih stranica našega portala sa interneta.</p>
-                Nekvalitetan rad jednog dijela korisnika, zatim nadolazeća i dugotrajna Covid kriza, te ponajviše javno iznesene laži, klevete i uvrede od strane troje bivših korisnika, sa kojima smo prekinuli poslovnu suradnju zbog teških povreda pravila poslovanja i protiv kojih su podnesene kaznene prijave, stvarni su razlozi usporavanja razvoja i ovog privremenog prekida poslovanja. <p>O navedenim razlozima, detaljno smo informirali članstvo, snimanjem tridesetak videa sa dokazima, argumentima i činjenicama, koja smo objavili na stranicama kompanijskog youtube kanala, tako da smo po tom pitanju uglavnom sve rekli.</p>
-                <p>Na žalost, navedena videa pogledana su prosječno 1.500 puta, rijetko koji video do kraja, neka videa su pogledana manje od 1.000 puta, mali broj videa pogledan je više od 2.000 puta dok ni jedan nije pogledan više od 3.000 puta. </p>
+                <p>Nekvalitetan rad jednog dijela korisnika, zatim nadolazeća i dugotrajna Covid kriza, te ponajviše javno iznesene laži, klevete i uvrede od strane troje bivših korisnika, sa kojima smo prekinuli poslovnu suradnju zbog teških povreda pravila poslovanja i protiv kojih su podnesene kaznene prijave, stvarni su razlozi usporavanja razvoja i ovog privremenog prekida poslovanja.</p>
+                <p>O navedenim razlozima, detaljno smo informirali članstvo, snimanjem tridesetak videa sa dokazima, argumentima i činjenicama, koja smo objavili na stranicama kompanijskog youtube kanala, tako da smo po tom pitanju uglavnom sve rekli.</p>
+                <p>Na žalost, navedena videa pogledana su prosječno 1.500 puta, rijetko koji video do kraja, neka videa su pogledana manje od 1.000 puta, mali broj videa pogledan je više od 2.000 puta dok ni jedan nije pogledan više od 3.000 puta.</p>
                 <p>Kada uzmemo u obzir da je u kompaniju registrirano više od 24.000 korisnika evidentno je da velika većina korisnika nije upoznata o stvarnim i pravim razlozima koji su utjecali na ovaj privremeni prekid poslovanja.</p>
-                <p>Međutim, upravo je to pokazatelj, krivog i pogrešnog rada velike većine naših članova kao i jasan dokaz neinformiranosti članova kako po pitanju navedenih dokaza tako i po pitanju općeg razvoja kompanije i cjelokupne zajednice. </p>
-                <p>Jer kako objasniti činjenicu da od 24.000 korisnika prilikom puštanja društvene mreže u rad gotovo 14.000 korisnika nisu NIKADA pristupili istoj?! </p>
-                <p>Kako objasniti činjenicu da od 24.000 korisnika imamo samo 2.800 pretplatnika na našem youtube kanalu, koji bi trebao biti jedan od glavnih komunikacijsko-informacijskih kanala... </p>
+                <p>Međutim, upravo je to pokazatelj, krivog i pogrešnog rada velike većine naših članova kao i jasan dokaz neinformiranosti članova kako po pitanju navedenih dokaza tako i po pitanju općeg razvoja kompanije i cjelokupne zajednice.</p>
+                <p>Jer kako objasniti činjenicu da od 24.000 korisnika prilikom puštanja društvene mreže u rad gotovo 14.000 korisnika nisu NIKADA pristupili istoj?!</p>
+                <p>Kako objasniti činjenicu da od 24.000 korisnika imamo samo 2.800 pretplatnika na našem youtube kanalu, koji bi trebao biti jedan od glavnih komunikacijsko-informacijskih kanala...</p>
                 <p>Gdje je ostalih 21.200 korisnika? Tko su ti ljudi? Tko ih je registrirao? Kako su se oni informirali o novostima, radnim obavezama i općenito o poslovanju?</p>
-                <p>Uglavnom, danas je mnogima jasno, da je kompanija privremeno prestala sa radom, ne svojm krivnjom, već zbog naprijed navedenih problema na koje nismo mogli nikako utjecati a nažalost nismo ih u startu mogli predvidjeti. </p>
+                <p>Uglavnom, danas je mnogima jasno, da je kompanija privremeno prestala sa radom, ne svojm krivnjom, već zbog naprijed navedenih problema na koje nismo mogli nikako utjecati a nažalost nismo ih u startu mogli predvidjeti.</p>
                 <p>Kada smo problem primjetili, pokušali smo reagirati ali u nedostatku novca nismo mogli puno napraviti jer je za određene promjene u sistemu poslovanja jednostavno neophodan – novac.</p>
                 <p>Skidanjem stranica portala sa interneta, zbog nemogućnosti daljnjeg pokrivanja tekućih troškova, kompanija nije prestala sa radom niti smo odustali od same vizije stvaranja online zajednice, koju smo transparentno promovirali od samog početka poslovanja.</p>
                 <p>Kada pogledamo unatrag, danas možemo reći da smo možda pogriješili sa odabirom načina financiranja razvoja kompanije i cjelokupne zajednice, jer smo naivno vjerovali da ćemo uz pomoć članova bez većih problema doći bar do 50.000 korisnika, što je broj koji bi nam donio dovoljno sredstava da završimo potrebne softvere i aplikacije neophodne za daljni razvoj poslovnog koncepta i zajednice koju smo započeli stvarati.</p>
-                <p>Kao što je svima poznato, zbog navedenih problema, nismo uspjeli u tome. </p>
+                <p>Kao što je svima poznato, zbog navedenih problema, nismo uspjeli u tome.</p>
                 <p>Međutim, iako su neki od članova pomislili da je to definitivno kraj našeg poslovanja, mi ni u jednom trenutku nismo odustali od naše ideje i započetog poslovanja, već smo radili sve što je u našoj moći kako bi poslovanje nastavili.</p>
-                <p>Prije svega, važno je napomenuti, da smo na samom početku poslovanje pokrenuli uz 90 dnevnu garanciju povrata novca, što smo poštovali na način da je SVAKOME korisniku koji je u roku podnio zahtjev za povrat novca isti bio uredno i vraćen. Upravo je navedena garancija povrata novca dovela kompaniju do najvećeg problema, jer se pojavom javnih lažnih optužbi, kleveta i uvreda protiv vlasnika kompanije sve veći broj članova odlučilo na podnošenje zahjeva za povrat novca.  </p>
-                <p>U sitauciji kada nam je za razvoj softvera i ostalih troškova bilo potrebno sve više novca mi smo bili prisiljeni vraćati novac kako bi ispoštovali datu garanciju, što je posljedično uzrokovalo usporavanje cjelokupnog razvoja te u konačnici i privremeni prekid poslovanja. </p>
-                <p>Isto tako, jasno je i nedvojbeno prezentirano da novac uplaćen za ”pune franšize” kao i za veće investicije nije pod garancijom vraćanja jer je taj novac odmah odlazio u raspodjelu, na plaćanje faktura programerima ili na ostale tekuće troškove razvoja.  </p>
+                <p>Prije svega, važno je napomenuti, da smo na samom početku poslovanje pokrenuli uz 90 dnevnu garanciju povrata novca, što smo poštovali na način da je SVAKOME korisniku koji je u roku podnio zahtjev za povrat novca isti bio uredno i vraćen. Upravo je navedena garancija povrata novca dovela kompaniju do najvećeg problema, jer se pojavom javnih lažnih optužbi, kleveta i uvreda protiv vlasnika kompanije sve veći broj članova odlučilo na podnošenje zahjeva za povrat novca.</p>
+                <p>U sitauciji kada nam je za razvoj softvera i ostalih troškova bilo potrebno sve više novca mi smo bili prisiljeni vraćati novac kako bi ispoštovali datu garanciju, što je posljedično uzrokovalo usporavanje cjelokupnog razvoja te u konačnici i privremeni prekid poslovanja.</p>
+                <p>Isto tako, jasno je i nedvojbeno prezentirano da novac uplaćen za "pune franšize" kao i za veće investicije nije pod garancijom vraćanja jer je taj novac odmah odlazio u raspodjelu, na plaćanje faktura programerima ili na ostale tekuće troškove razvoja.</p>
                 <p>Sukladno navedenom... sukladno franšiznom ugovoru kojega ste potpisali, kompanija InFace Invest Group LTD, <strong>NIJE DUŽNA VRATITI NOVAC KOJEGA STE UPLATILI KUPOVINOM STARTNOG PAKETA ILI UPLATOM VEĆE INVESTICIJE</strong>, međutim kako ne želimo da bilo tko smatra da je oštećen u našoj kompaniji, vaša će vam investicija biti vraćena!</p>
                 <p>S obzirom na činjenicu, da je novac korisnika utrošen na razvoj kompanije, novac namjenjen za povrat korisnicima koji odluče odustati od nastavka poslovanja ovoga trenutka jednostavno ne postoji.</p>
                 <p>Rješenje problema, kako za članove koji odustaju od poslovanja tako i za članove koji žele nastaviti poslovanje nalazi se samo u osiguravanju sredstava potrebnih za određene izmjene u SFT21 softveru kao i za završetak softvera i aplikacija za društvenu mrežu i webshop, što je u konačnici preduvjet nastavka poslovanja.</p>
-                <p>Sa tim u vezi, odlučili smo predstavit novi nadograđeni i u nekim segmentima izmijenjeni poslovni koncept nakon čega pokrećemo fazu prodaje Investicijskih paketa. </p>
+                <p>Sa tim u vezi, odlučili smo predstavit novi nadograđeni i u nekim segmentima izmijenjeni poslovni koncept nakon čega pokrećemo fazu prodaje Investicijskih paketa.</p>
                 <p>Novac prikupljen podajom paketa, biti će pohranjen na računu kompanije i iskorišten prvenstveno za nadogradnju i završetak započetih sotvera i aplikacija. Prioritet kompanije je prikupiti sredstva koja će osigurati početak neometanog nastavka poslovanja nakon čega slijedi povrat novca korisnicima koji će odustati i podnijeti zahtjev za povrat novca.</p>
                 <p>Nakon što završi period prikupljanja sredstava a prije prvog popunjavanja pozicija u SFalgoritmu, kompanija će pravovremeno obavijestiti sve korisnike iz starog sistema da donesu odluku o prekidu poslovanja uz zahtjev za povrat novca.</p>
                 <p><strong>POVRAT NOVCA ĆE SE ODVIJATI TRANSPARENTNO PREMA PRAVILIMA, KOJA ĆE OSIGURAVATI DA SE NOVAC VRAĆA U SKLADU SA MOGUĆNOSTIMA KOMPANIJE, PREMA DATUMU UPLATE STARTNOG PAKETA ILI INVESTICIJE KAO I PREMA VELIČINI IZNOSA KOJEGA TREBA VRATITI.</strong></p>
@@ -438,7 +462,7 @@
                 <p>S obzirom da će proći određeni vremenski period prije nego li kompanija bude u mogućnosti započeti sa povratom novca, naš vam je najiskreniji savjet da ne odbacujete olako članstvo u našoj zajednici, te da u tom periodu pratite naš razvoj i dešavanja u kompaniji te da proučite sve pogodnosti novog SFT21 poslovnog koncpta, kako bi konačnu odluku o prekidu ili nastavku poslovanja donijeli na osnovi najnovijih informacija.</p>
                 <p>Jer jedna je činjenica neoboriva i nitko je do današnjeg dana nije pokušao demantirati... a to je činjenica da smo pokrenuli stvaranje zajednice u kojoj će korisnici imati mogućnosti pokrenuti svoje internet poslovanje putem stranica našega portala, u kojem će razvijati vlastitu društvenu mrežu i webshop, uz mogućnost ostvarivaja zarade na više načina kao i mnoge druge pogodnosti.</p>
                 <p>Bez obzira na sve probleme, prepreke, izazove koji su doveli do trenutne situacije mi jednostavno idemo dalje. Jer mi znamo... kao i mnogi naši vjerni članovi da smo počeli stvarati projekt sa neograničenim potencijalom na dobrobit naših članova i da nas ništa neće zaustaviti.</p>
-                <p>Moramo priznati, da su nas ponajprije javne lažne optužbe, klevete i uvrede privremeno zaustavile, nanijevši nam ogromnu štetu, ali usprkos svemu, znajući da nismo krivi i znajući da u rukama držimo i više nego vrijedan poslovni projekt, poput feniksa vraćamo se iz pepela... </p>
+                <p>Moramo priznati, da su nas ponajprije javne lažne optužbe, klevete i uvrede privremeno zaustavile, nanijevši nam ogromnu štetu, ali usprkos svemu, znajući da nismo krivi i znajući da u rukama držimo i više nego vrijedan poslovni projekt, poput feniksa vraćamo se iz pepela...</p>
                 <p><strong>LAŽIMA</strong> su nas zaustavili i bacili na dno... i to im je uspjelo, samo zato što su na njihove laži nasjeli mnogi naši članovi koji su im povjerovali. Ali usprkos svemu, nisu pobijedili... ponovo ustajemo i nastavljamo gdje smo stali, jer uz nas je <strong>ISTINA</strong>.</p>
                 <p>Vjerujemo da će nam se na tom putu pridružiti kako veliki broj naših starih članova tako i mnogi koji će tek čuti za našu zajednicu.</p>
                 <br>
@@ -449,7 +473,7 @@
                     <em style="margin-top: 0px;">Zoran Lazarević</em>
                 </p>
                 <br>
-                <p style="text-align: center;"><strong>Molimo Vas da prije donošenja odluke pogledate i proučite prezentaciju SFT21 Business Concept. Na kraju prezentacije možete se upoznati sa opcijama o prekidu ili nastavku poslovanja. Odluku ćete donijeti po vlastitom izboru kada za to dođe vrijeme, o čemu ćete biti pravovremeno obaviješteni.</strong> </p>
+                <p style="text-align: center;"><strong>Molimo Vas da prije donošenja odluke pogledate i proučite prezentaciju SFT21 Business Concept. Na kraju prezentacije možete se upoznati sa opcijama o prekidu ili nastavku poslovanja. Odluku ćete donijeti po vlastitom izboru kada za to dođe vrijeme, o čemu ćete biti pravovremeno obaviješteni.</strong></p>
             </div>
             <div class="modal-action-button-container">
                 <button class="glass-button modal-action-button" id="navigateToPresentationButton" style="margin-right: 10px;">
@@ -464,15 +488,19 @@
         </div>
     </div>
 
-    <!-- Video Player Modal -->
+    <!-- Video Player Modal sa YouTube embed -->
     <div id="videoPlayerModal" class="modal-overlay video-modal-overlay">
         <div class="video-player-container">
             <button class="video-modal-close-button" id="closeVideoPlayerButton">×</button>
             <div class="video-wrapper">
-                <video id="presentationVideo" controls controlsList="nodownload noremoteplayback" preload="metadata">
-                     <source src="videos/SFT21 Business Concept.mp4" type="video/mp4">
-                    Vaš preglednik ne podržava video tag.
-                </video>
+                <iframe id="presentationVideo" 
+                        src="https://www.youtube-nocookie.com/embed/xDZNaDX58jg?si=z8Py1S8jPw7JpXoU&autoplay=1&rel=0&modestbranding=1" 
+                        title="SFT21 Business Concept" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        referrerpolicy="strict-origin-when-cross-origin" 
+                        allowfullscreen>
+                </iframe>
             </div>
             <div class="video-glow-border"></div>
         </div>
@@ -538,65 +566,62 @@
             let isInfoModalOpen = false;
 
             function openInfoModal() {
-                infoModal.classList.add("active");
-                document.body.style.overflow = 'hidden';
                 isInfoModalOpen = true;
+                infoModal.classList.add("active");
+                document.body.classList.add("system-cursor-active");
                 updateInteractiveElements();
-                modalActionButtonContainer.classList.remove('visible');
-                modalScrollableContent.scrollTop = 0;
-                modalScrollableContent.addEventListener('scroll', handleModalScroll);
-                requestAnimationFrame(handleModalScroll);
+                setTimeout(() => {
+                    modalActionButtonContainer.classList.add("visible");
+                }, 300);
             }
 
             function closeInfoModal() {
-                infoModal.classList.remove("active");
                 isInfoModalOpen = false;
-                modalScrollableContent.removeEventListener('scroll', handleModalScroll);
-                // Vrati body scroll samo ako nijedan modal nije aktivan
-                if (!videoPlayerModal.classList.contains("active")) {
-                    document.body.style.overflow = '';
-                }
-                updateInteractiveElements();
-            }
-
-            function handleModalScroll() {
-                if (!isInfoModalOpen) return;
-                const scrollPosition = modalScrollableContent.scrollTop + modalScrollableContent.clientHeight;
-                const scrollHeight = modalScrollableContent.scrollHeight;
-                if (scrollPosition >= scrollHeight - 5) { // Unutar 5px od dna
-                    modalActionButtonContainer.classList.add('visible');
-                } else {
-                    modalActionButtonContainer.classList.remove('visible');
-                }
+                modalActionButtonContainer.classList.remove("visible");
+                setTimeout(() => {
+                    infoModal.classList.remove("active");
+                    document.body.classList.remove("system-cursor-active");
+                    updateInteractiveElements();
+                }, 200);
             }
 
             function openVideoPlayer() {
-                if (infoModal.classList.contains("active")) {
-                    closeInfoModal();
-                }
-
-                videoPlayerModal.classList.add("active");
-                document.body.style.overflow = 'hidden';
-                document.body.classList.add('system-cursor-active'); // Sakrij prilagođeni kursor i prikaži sistemski
-                presentationVideo.play();
-                updateInteractiveElements();
+                closeInfoModal();
+                setTimeout(() => {
+                    videoPlayerModal.classList.add("active");
+                    document.body.classList.add("system-cursor-active");
+                    updateInteractiveElements();
+                }, 300);
             }
 
             function closeVideoPlayer() {
                 videoPlayerModal.classList.remove("active");
-                if (presentationVideo) {
-                    presentationVideo.pause();
-                    presentationVideo.currentTime = 0;
-                }
-                document.body.classList.remove('system-cursor-active'); // Prikaži prilagođeni kursor
-
-                // Ponovno otvori infoModal i skrolaj na dno
-                openInfoModal();
-                setTimeout(() => {
-                    modalScrollableContent.scrollTop = modalScrollableContent.scrollHeight;
-                    handleModalScroll(); // Osiguraj vidljivost gumba
-                }, 150); // Kratko kašnjenje da se modal stigne otvoriti
+                document.body.classList.remove("system-cursor-active");
                 updateInteractiveElements();
+                
+                // Zaustavi video mijenjanjem src-a
+                const currentSrc = presentationVideo.src;
+                presentationVideo.src = '';
+                setTimeout(() => {
+                    presentationVideo.src = currentSrc.replace('&autoplay=1', '');
+                }, 100);
+            }
+
+            function handleModalScroll() {
+                const scrollTop = modalScrollableContent.scrollTop;
+                const scrollHeight = modalScrollableContent.scrollHeight;
+                const clientHeight = modalScrollableContent.clientHeight;
+                const scrollPercentage = scrollTop / (scrollHeight - clientHeight);
+                
+                if (scrollPercentage > 0.7) {
+                    modalActionButtonContainer.classList.add("visible");
+                } else {
+                    modalActionButtonContainer.classList.remove("visible");
+                }
+            }
+
+            if (modalScrollableContent) {
+                modalScrollableContent.addEventListener('scroll', handleModalScroll);
             }
 
             function handleGlobalKeyDown(event) {
@@ -624,13 +649,6 @@
             if (openInfoModalButton) openInfoModalButton.addEventListener("click", openInfoModal);
             if (closeModalButton) closeModalButton.addEventListener("click", closeInfoModal);
 
-            // *** OVDJE JE PROMJENA: UKLONJEN je event listener za zatvaranje infoModala klikom na pozadinu ***
-            // if (infoModal) infoModal.addEventListener("click", (event) => {
-            //     if (event.target === infoModal) closeInfoModal();
-            // });
-            // Sada se infoModal zatvara SAMO klikom na gumb 'X' ili tipkom ESC.
-
-
             if (navigateToPresentationButton) navigateToPresentationButton.addEventListener("click", openVideoPlayer);
 
             if (navigateToInvestPaketiButton) {
@@ -642,10 +660,7 @@
                 });
             }
 
-            // Video modal se zatvara samo klikom na 'X' ili ESC
             if (closeVideoPlayerButton) closeVideoPlayerButton.addEventListener("click", closeVideoPlayer);
-            // Ostali klikovi oko video playera nemaju učinka jer je uklonjen event listener za overlay
-
 
             updateInteractiveElements();
             if (slides.length > 0 && !infoModal.classList.contains('active') && !videoPlayerModal.classList.contains('active')) {
@@ -661,12 +676,14 @@
             }
         });
     </script>
-    <!-- Video sekcija -->
-<div style="text-align: center; margin: 40px 0; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 15px;">
-    <h2 style="color: #6A0DAD; margin-bottom: 20px;">📹 SFT21 Business Concept</h2>
-    <div style="position: relative; width: 100%; max-width: 800px; margin: 0 auto;">
-        <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/xDZNaDX58jg?si=z8Py1S8jPw7JpXoU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+    <!-- Video sekcija na dnu stranice (zadržana kao backup) -->
+    <div style="text-align: center; margin: 40px 0; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 15px; display: none;">
+        <h2 style="color: #6A0DAD; margin-bottom: 20px;">📹 SFT21 Business Concept</h2>
+        <div style="position: relative; width: 100%; max-width: 800px; margin: 0 auto;">
+            <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/xDZNaDX58jg?si=z8Py1S8jPw7JpXoU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
     </div>
-</div>
 </body>
 </html>
+
