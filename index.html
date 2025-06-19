@@ -323,8 +323,8 @@
         }
         .video-player-container {
             position: relative;
-            width: clamp(300px, 62vw, 800px);
-            max-width: 75%;
+            width: clamp(300px, 68vw, 950px);
+            max-width: 82%;
             aspect-ratio: 16/9;
             background: #10051a;
             border-radius: 10px;
@@ -374,18 +374,21 @@
         @keyframes subtleGlowPulse { from { box-shadow: 0 0 30px 10px rgba(138, 43, 226, 0.15), 0 0 50px 20px rgba(160, 32, 240, 0.1), 0 0 70px 30px rgba(180, 80, 250, 0.08); opacity: 0.8; } to { box-shadow: 0 0 35px 12px rgba(148, 53, 236, 0.2), 0 0 55px 22px rgba(170, 42, 250, 0.12), 0 0 75px 32px rgba(190, 90, 255, 0.1); opacity: 1; } }
         .video-modal-close-button {
             position: absolute; top: -15px; right: -15px;
-            background: rgba(250, 245, 255, 0.85);
-            border: 1px solid rgba(160, 32, 240, 0.3);
-            border-radius: 50%; width: 35px; height: 35px; font-size: 20px;
-            color: #6A0DAD;
+            background: rgba(74, 0, 114, 0.9);
+            border: 2px solid rgba(74, 0, 114, 0.8);
+            border-radius: 50%; width: 40px; height: 40px; font-size: 22px;
+            color: #FFFFFF;
             cursor: none; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; z-index: 3;
-            box-shadow: 0 0 10px rgba(160, 32, 240, 0.2);
+            box-shadow: 0 0 15px rgba(74, 0, 114, 0.6), 0 0 25px rgba(74, 0, 114, 0.4);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
         .video-modal-close-button:hover {
-            background: rgba(160, 32, 240, 0.2);
+            background: rgba(106, 13, 173, 0.95);
             color: #FFFFFF;
             transform: scale(1.1) rotate(180deg);
-            box-shadow: 0 0 15px rgba(160, 32, 240, 0.4);
+            box-shadow: 0 0 20px rgba(106, 13, 173, 0.8), 0 0 35px rgba(106, 13, 173, 0.6);
+            border-color: rgba(106, 13, 173, 0.9);
         }
 
         /* Responzivnost za vrlo male ekrane */
@@ -400,8 +403,8 @@
             .modal-action-button-container { bottom: 15px; left: 15px; right: 15px; padding-top: 10px; padding-bottom: 10px;}
             .modal-action-button { font-size: 0.85rem; }
             .modal-action-button .button-subtitle { font-size: 0.65rem; }
-            .video-player-container { width: 88vw; }
-            .video-modal-close-button { top: -10px; right: -10px; width: 30px; height: 30px; font-size: 16px; }
+            .video-player-container { width: 90vw; }
+            .video-modal-close-button { top: -10px; right: -10px; width: 35px; height: 35px; font-size: 18px; }
         }
     </style>
 </head>
@@ -463,11 +466,8 @@
                 <p>Jer jedna je činjenica neoboriva i nitko je do današnjeg dana nije pokušao demantirati... a to je činjenica da smo pokrenuli stvaranje zajednice u kojoj će korisnici imati mogućnosti pokrenuti svoje internet poslovanje putem stranica našega portala, u kojem će razvijati vlastitu društvenu mrežu i webshop, uz mogućnost ostvarivaja zarade na više načina kao i mnoge druge pogodnosti.</p>
                 <p>Bez obzira na sve probleme, prepreke, izazove koji su doveli do trenutne situacije mi jednostavno idemo dalje. Jer mi znamo... kao i mnogi naši vjerni članovi da smo počeli stvarati projekt sa neograničenim potencijalom na dobrobit naših članova i da nas ništa neće zaustaviti.</p>
                 <p>Moramo priznati, da su nas ponajprije javne lažne optužbe, klevete i uvrede privremeno zaustavile, nanijevši nam ogromnu štetu, ali usprkos svemu, znajući da nismo krivi i znajući da u rukama držimo i više nego vrijedan poslovni projekt, poput feniksa vraćamo se iz pepela...</p>
-                <p><strong>LAŽIMA</strong> su nas zaustavili i bacili na dno... i to im je privremeno uspjelo. Ali usprkos svemu, nisu pobijedili. Ponovo ustajemo i nastavljamo tamo gdje smo stali, časno, pošteno i transparentno, jer uz nas je <strong>ISTINA</strong>.</p>
+                <p><strong>LAŽIMA</strong> su nas zaustavili i bacili na dno... i to im je uspjelo, samo zato što su na njihove laži nasjeli mnogi naši članovi koji su im povjerovali. Ali usprkos svemu, nisu pobijedili... ponovo ustajemo i nastavljamo gdje smo stali, jer uz nas je <strong>ISTINA</strong>.</p>
                 <p>Vjerujemo da će nam se na tom putu pridružiti kako veliki broj naših starih članova tako i mnogi koji će tek čuti za našu zajednicu.</p>
-                <p>Mi smo svjesni činjenice da među Vama, članovima iz staroga sistema, ima onih koji su izgubili povjerenje te nemaju namjeru nastaviti poslovanje ali smo isto tako svjesni da među Vama ima i onih koji znaju prave i stvarne razloge problema u kojima smo se našli i koji nikada nisu to povjerenje izgubili.</p>
-                <p>Ispred nas je period u kojemu ćemo dati sve što je u našoj mogućnosti kako bi osigurali sredstva neophodna za završetak spomenutih softvera i aplikacija, kako bi isplatili sve one koji će odustati i riješili se dugovanja, te kako bi u konačnici nastavili poslovanje radeći na stvaranju zajednice u korist i u interesu naših vjernih članova.</p>
-                <p>Mi znamo svoj zacrtani put.. istina nam je temeljna vrijednost dok su nam ciljevi jednostavno bolji i kvalitetniji život svim našim članovima. Svjesni smo kvalitete i društvene vrijednosti našeg poslovnog koncepta ali kako bi pokazali i dokazali njegovu pravu moć, na tom putu trebamo Vašu pomoć i povjerenje.</p>
                 <br>
                 <p>Hvala na razumijevanju</p>
                 <p><em>Semper Fidelis</em></p>
@@ -476,7 +476,7 @@
                     <em style="margin-top: 0px;">Zoran Lazarević</em>
                 </p>
                 <br>
-                <p style="text-align: center;"><strong>Molimo Vas da prije donošenja odluke pogledate i proučite SFT21 Business Concept, prezentaciju novog, djelomično izmjenjenog i nadograđenog franšiznog poslovnog modela.  Kako bi okvirno vidjeli broj članova na koje možemo računati da će nastaviti poslovanje kao i broj onih koji će se odlučiti na ulaganje u Investicijske pakete, zamoliti ćemo vas da na kraju ovih stranica donesete Odluku o nastavku poslovanja. Bez obzira na odluku koju donesete danas, po završetku spomentutih softvera i aplikacija odnosno neposredno prije prvog popunjavanja SFalgoritma, pravovremeno ćemo vas ponovo kontaktirati kako bi donijeli definitivnu odluku o prekidu ili nastavku poslovanja.</strong></p>
+                <p style="text-align: center;"><strong>Molimo Vas da prije donošenja odluke pogledate i proučite prezentaciju SFT21 Business Concept. Na kraju prezentacije možete se upoznati sa opcijama o prekidu ili nastavku poslovanja. Odluku ćete donijeti po vlastitom izboru kada za to dođe vrijeme, o čemu ćete biti pravovremeno obaviješteni.</strong></p>
             </div>
             <div class="modal-action-button-container">
                 <button class="glass-button modal-action-button" id="navigateToPresentationButton" style="margin-right: 10px;">
@@ -687,6 +687,3 @@
             <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/xDZNaDX58jg?si=z8Py1S8jPw7JpXoU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
     </div>
-</body>
-</html>
-
