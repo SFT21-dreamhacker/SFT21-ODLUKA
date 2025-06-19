@@ -372,23 +372,35 @@
             pointer-events: none; z-index: 0; animation: subtleGlowPulse 5s infinite alternate ease-in-out;
         }
         @keyframes subtleGlowPulse { from { box-shadow: 0 0 30px 10px rgba(138, 43, 226, 0.15), 0 0 50px 20px rgba(160, 32, 240, 0.1), 0 0 70px 30px rgba(180, 80, 250, 0.08); opacity: 0.8; } to { box-shadow: 0 0 35px 12px rgba(148, 53, 236, 0.2), 0 0 55px 22px rgba(170, 42, 250, 0.12), 0 0 75px 32px rgba(190, 90, 255, 0.1); opacity: 1; } }
+        
+        /* Dodavanje X za zatvaranje videa */
         .video-modal-close-button {
-            position: absolute; top: -35px; right: -35px;
-            background: rgba(74, 0, 114, 1);
-            border: 3px solid rgba(106, 13, 173, 1);
-            border-radius: 50%; width: 50px; height: 50px; font-size: 26px;
+            position: absolute;
+            top: 15px; /* Pomaknuto bliže rubu */
+            right: 15px; /* Pomaknuto bliže rubu */
+            background: #4A0072; /* Tamnoljubičasta boja */
+            border: 3px solid #A020F0; /* Ljubičasti obrub */
+            border-radius: 50%;
+            width: 40px; /* Manja veličina */
+            height: 40px; /* Manja veličina */
+            font-size: 20px; /* Manja veličina slova */
             color: #FFFFFF;
-            cursor: none; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease; z-index: 15;
-            box-shadow: 0 0 25px rgba(74, 0, 114, 1), 0 0 40px rgba(74, 0, 114, 0.8), 0 6px 20px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            cursor: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 15;
+            box-shadow: 0 0 10px rgba(74, 0, 114, 0.7); /* Sjena za isticanje */
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
         }
         .video-modal-close-button:hover {
-            background: rgba(106, 13, 173, 1);
+            background: #6A0DAD; /* Svjetlija ljubičasta na hover */
             color: #FFFFFF;
-            transform: scale(1.2) rotate(180deg);
-            box-shadow: 0 0 30px rgba(106, 13, 173, 1), 0 0 50px rgba(106, 13, 173, 0.9), 0 8px 25px rgba(0, 0, 0, 0.6);
-            border-color: rgba(138, 43, 226, 1);
+            transform: scale(1.2) rotate(90deg);
+            border-color: #6A0DAD;
+            box-shadow: 0 0 15px rgba(106, 13, 173, 0.9);
         }
 
         /* Responzivnost za vrlo male ekrane */
@@ -404,7 +416,13 @@
             .modal-action-button { font-size: 0.85rem; }
             .modal-action-button .button-subtitle { font-size: 0.65rem; }
             .video-player-container { width: 90vw; }
-            .video-modal-close-button { top: -20px; right: -45px; width: 45px; height: 45px; font-size: 22px; }
+            .video-modal-close-button { /* Prilagodba za male ekrane */
+                top: 10px; 
+                right: 10px; 
+                width: 35px; 
+                height: 35px; 
+                font-size: 18px; 
+            }
         }
     </style>
 </head>
@@ -694,3 +712,5 @@ Bez obzira na odluku koju donesete danas, po završetku spomentutih softvera i a
             <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/xDZNaDX58jg?si=z8Py1S8jPw7JpXoU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
     </div>
+</body>
+</html>
