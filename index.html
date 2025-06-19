@@ -494,10 +494,10 @@
             <button class="video-modal-close-button" id="closeVideoPlayerButton">×</button>
             <div class="video-wrapper">
                 <iframe id="presentationVideo" 
-                        src="https://www.youtube-nocookie.com/embed/xDZNaDX58jg?si=z8Py1S8jPw7JpXoU&autoplay=1&rel=0&modestbranding=1" 
+                        src="https://www.youtube-nocookie.com/embed/xDZNaDX58jg?si=z8Py1S8jPw7JpXoU&rel=0&modestbranding=1" 
                         title="SFT21 Business Concept" 
                         frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
                         referrerpolicy="strict-origin-when-cross-origin" 
                         allowfullscreen>
                 </iframe>
@@ -603,7 +603,7 @@
                 const currentSrc = presentationVideo.src;
                 presentationVideo.src = '';
                 setTimeout(() => {
-                    presentationVideo.src = currentSrc.replace('&autoplay=1', '');
+                    presentationVideo.src = currentSrc;
                 }, 100);
             }
 
