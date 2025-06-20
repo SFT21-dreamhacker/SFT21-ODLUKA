@@ -366,22 +366,11 @@
             border: none;
         }
         
-        /* Novi kontejner za kontrole */
-        .video-controls-container {
-            position: absolute;
-            top: -35px; /* Pomaknuto iznad playera */
-            right: 0px;  /* Poravnato desno */
-            z-index: 20; /* Iznad samog playera */
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        /* Gumb za zatvaranje videa - pozicioniran unutar .video-controls-container */
+        /* Gumb za zatvaranje videa */
         .video-modal-close-button {
-            position: relative; /* Promijenjeno iz absolute u relative */
-            top: auto; /* Maknuto fiksno pozicioniranje */
-            right: auto; /* Maknuto fiksno pozicioniranje */
+            position: absolute; /* Vraćen na absolute */
+            top: 15px; /* Pomaknuto bliže rubu */
+            right: 15px; /* Pomaknuto bliže rubu */
             background: #4A0072; /* Tamnoljubičasta boja */
             border: 3px solid #A020F0; /* Ljubičasti obrub */
             border-radius: 50%;
@@ -394,6 +383,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
+            z-index: 25; /* Z-index je sada viši kako bi bio iznad video playera */
             box-shadow: 0 0 10px rgba(74, 0, 114, 0.7); /* Sjena za isticanje */
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
@@ -522,10 +512,7 @@ Bez obzira na odluku koju donesete danas, po završetku spomentutih softvera i a
     <!-- Video Player Modal sa YouTube embed -->
     <div id="videoPlayerModal" class="modal-overlay video-modal-overlay">
         <div class="video-player-container">
-            <!-- Novi kontejner za kontrole -->
-            <div class="video-controls-container">
-                <button class="video-modal-close-button" id="closeVideoPlayerButton">×</button>
-            </div>
+            <div class="video-modal-close-button" id="closeVideoPlayerButton">×</div>
             <div class="video-wrapper">
                 <iframe id="presentationVideo" 
                         src="https://www.youtube-nocookie.com/embed/xDZNaDX58jg?si=z8Py1S8jPw7JpXoU&rel=0&modestbranding=1" 
