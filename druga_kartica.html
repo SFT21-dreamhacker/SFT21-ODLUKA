@@ -201,7 +201,7 @@
         }
         .modal-content input[type="text"],
         .modal-content input[type="email"],
-        .modal-content input[type="number"] { /* Dodano za input type number */
+        .modal-content input[type="number"] {
             width: 100%;
             padding: 12px;
             margin-bottom: 5px;
@@ -291,31 +291,30 @@
             cursor: pointer;
             color: #4A0072;
         }
-        .investment-option input[type="radio"] {
+        .investment-option input[type="checkbox"] { /* Promijenjeno iz radio u checkbox */
             appearance: none;
             -webkit-appearance: none;
             width: 18px;
             height: 18px;
             border: 2px solid #6A0DAD;
-            border-radius: 50%;
+            border-radius: 4px; /* Promijenjeno iz 50% u 4px za kvadratiće */
             outline: none;
             cursor: pointer;
             position: relative;
             transition: border-color 0.2s ease, background-color 0.2s ease;
+            margin-right: 0; /* Uklanja nepotrebni desni margin */
         }
-        .investment-option input[type="radio"]:checked {
+        .investment-option input[type="checkbox"]:checked {
             border-color: #4A0072;
             background-color: #6A0DAD;
         }
-        .investment-option input[type="radio"]:checked::after {
-            content: '';
+        .investment-option input[type="checkbox"]:checked::after {
+            content: '✔'; /* Kvačica */
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 8px;
-            height: 8px;
-            background-color: white;
-            border-radius: 50%;
+            font-size: 12px;
+            color: white;
             transform: translate(-50%, -50%);
         }
         .investment-amount-input {
@@ -327,7 +326,7 @@
         }
         .investment-amount-input input[type="number"] {
             max-width: 120px;
-            margin-bottom: 0; /* Reset margin-bottom */
+            margin-bottom: 0;
         }
         .investment-amount-input .currency-symbol {
             font-weight: bold;
@@ -386,46 +385,46 @@
                 <legend>IZABERI INVESTICIJSKI PAKET ODNOSNO IZNOS ULAGANJA</legend>
                 <div class="investment-option">
                     <label>
-                        <input type="radio" name="investmentPackage" value="100">
+                        <input type="checkbox" name="investmentPackage" value="100">
                          Prvi investicijski paket (IP1): 100 €
                     </label>
                 </div>
                 <div class="investment-option">
                     <label>
-                        <input type="radio" name="investmentPackage" value="200">
+                        <input type="checkbox" name="investmentPackage" value="200">
                          Drugi investicijski paket (IP2): 200 €
                     </label>
                 </div>
                 <div class="investment-option">
                     <label>
-                        <input type="radio" name="investmentPackage" value="500">
+                        <input type="checkbox" name="investmentPackage" value="500">
                          Treći investicijski paket (IP3): 500 €
                     </label>
                 </div>
                 <div class="investment-option">
                     <label>
-                        <input type="radio" name="investmentPackage" value="1000">
+                        <input type="checkbox" name="investmentPackage" value="1000">
                          Četvrti investicijski paket (IP4): 1000 €
                     </label>
                 </div>
                 <div class="investment-option">
                     <label>
-                        <input type="radio" name="investmentPackage" value="1500">
+                        <input type="checkbox" name="investmentPackage" value="1500">
                          Peti investicijski paket (IP5): 1500 €
                     </label>
                 </div>
                 <div class="investment-option">
                     <label>
-                        <input type="radio" name="investmentPackage" value="2100">
+                        <input type="checkbox" name="investmentPackage" value="2100">
                          Šesti investicijski paket (IP6): 2100 €
                     </label>
                 </div>
                 <div class="investment-option">
                     <label>
-                        <input type="radio" name="investmentPackage" value="">
+                        <input type="checkbox" name="investmentPackage" value="custom">
                          Sedmi investicijski paket (IP7): 5000 € ili više
                     </label>
-                    <input type="number" id="customInvestmentAmount" placeholder="Unesite iznos" style="display: none; max-width: 100px;">
+                    <input type="number" id="customInvestmentAmount" placeholder="Unesite iznos" style="display: none; max-width: 120px;">
                 </div>
             </fieldset>
 
@@ -542,70 +541,96 @@
             const customInvestmentInput = document.getElementById('customInvestmentAmount');
             const totalInvestmentDisplay = document.getElementById('displayTotalInvestment');
 
-            const radioButtons = document.querySelectorAll('input[name="investmentPackage"]');
+            const investmentPackageCheckboxes = document.querySelectorAll('input[name="investmentPackage"]');
 
-            function validateEmail(email) {
-                const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-                return re.test(String(email).toLowerCase());
-            }
-
-            function handleValidation(inputElement, errorElement) {
-                const email = inputElement.value.trim();
-                if (email && !validateEmail(email)) {
-                    errorElement.textContent = 'Format email adrese nije ispravan.';
-                    inputElement.classList.add('input-error');
-                    return false;
-                } else {
-                    errorElement.textContent = '';
-                    inputElement.classList.remove('input-error');
-                    return true;
-                }
-            }
+            let currentSelectedAmount = 0;
+            const MAX_INVESTMENT_THRESHOLD = 5000;
 
             function updateTotalInvestmentDisplay() {
-                let selectedValue = '';
-                let selectedRadio = document.querySelector('input[name="investmentPackage"]:checked');
-                if (selectedRadio) {
-                    selectedValue = selectedRadio.value;
+                currentSelectedAmount = 0;
+                let customAmountEntered = false;
+
+                document.querySelectorAll('input[name="investmentPackage"]:checked').forEach(checkbox => {
+                    if (checkbox.value === 'custom') {
+                        customAmountEntered = true;
+                    } else {
+                        currentSelectedAmount += parseFloat(checkbox.value) || 0;
+                    }
+                });
+
+                if (customAmountEntered) {
+                    const customAmount = parseFloat(customInvestmentInput.value) || 0;
+                    currentSelectedAmount = Math.max(currentSelectedAmount, customAmount);
                 }
 
-                if (selectedValue === '') { // Odabrano "5000 € ili više"
-                    const customAmount = parseFloat(customInvestmentInput.value);
-                    if (!isNaN(customAmount) && customAmount >= 5000) {
-                        totalInvestmentDisplay.textContent = `${customAmount} €`;
-                    } else {
-                        totalInvestmentDisplay.textContent = '';
-                    }
+                if (currentSelectedAmount > 0) {
+                    totalInvestmentDisplay.textContent = `${currentSelectedAmount} €`;
                 } else {
-                    totalInvestmentDisplay.textContent = `${selectedValue} €`;
+                    totalInvestmentDisplay.textContent = '';
                 }
             }
+            
+            function handlePackageSelectionLogic() {
+                let totalAmount = 0;
+                let hasCustomSelection = false;
+                let customAmount = 0;
 
-            if (oldEmailInput && oldEmailError) oldEmailInput.addEventListener('blur', () => handleValidation(oldEmailInput, oldEmailError));
-            if (newEmailInput && newEmailError) newEmailInput.addEventListener('blur', () => handleValidation(newEmailInput, newEmailError));
-            if (customInvestmentInput) customInvestmentInput.addEventListener('input', updateTotalInvestmentDisplay);
-
-            radioButtons.forEach(radio => {
-                radio.addEventListener('change', (event) => {
-                    if (event.target.value === '') { // Odabran "5000 € ili više"
-                        customInvestmentInput.style.display = 'block';
-                        customInvestmentInput.focus();
+                document.querySelectorAll('input[name="investmentPackage"]:checked').forEach(checkbox => {
+                    if (checkbox.value === 'custom') {
+                        hasCustomSelection = true;
                     } else {
-                        customInvestmentInput.style.display = 'none';
-                        customInvestmentInput.value = '';
-                        oldEmailError.textContent = ''; // Očisti grešku za email ako se odabere fiksna opcija
-                        newEmailError.textContent = '';
-                        oldEmailInput.classList.remove('input-error');
-                        newEmailInput.classList.remove('input-error');
+                        totalAmount += parseFloat(checkbox.value) || 0;
                     }
-                    updateTotalInvestmentDisplay();
                 });
+
+                if (hasCustomSelection) {
+                    customAmount = parseFloat(customInvestmentInput.value) || 0;
+                    totalAmount = Math.max(totalAmount, customAmount);
+                }
+
+                if (totalAmount > MAX_INVESTMENT_THRESHOLD) {
+                    // Uncheck all other packages and check IP7
+                    investmentPackageCheckboxes.forEach(cb => {
+                        cb.checked = false;
+                        cb.disabled = false; // Re-enable others if needed
+                    });
+                    const ip7Checkbox = document.querySelector('input[name="investmentPackage"][value="custom"]');
+                    if (ip7Checkbox) {
+                        ip7Checkbox.checked = true;
+                        customInvestmentInput.value = Math.max(totalAmount, 5000).toString(); // Ensure minimum 5000
+                        customInvestmentInput.style.display = 'block';
+                        updateTotalInvestmentDisplay();
+                    }
+                } else {
+                    // Enable/disable custom input based on IP7 selection
+                    const ip7Checkbox = document.querySelector('input[name="investmentPackage"][value="custom"]');
+                    if (ip7Checkbox) {
+                        customInvestmentInput.style.display = ip7Checkbox.checked ? 'block' : 'none';
+                        if (!ip7Checkbox.checked) {
+                            customInvestmentInput.value = ''; // Clear custom input if IP7 is unchecked
+                        }
+                    }
+                }
+                updateTotalInvestmentDisplay(); // Update display after logic
+            }
+
+            oldEmailInput.addEventListener('blur', () => handleValidation(oldEmailInput, oldEmailError));
+            newEmailInput.addEventListener('blur', () => handleValidation(newEmailInput, newEmailError));
+            customInvestmentInput.addEventListener('input', () => {
+                handlePackageSelectionLogic(); // Re-evaluate if custom input changes
+                updateTotalInvestmentDisplay();
+            });
+
+            investmentPackageCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', handlePackageSelectionLogic);
             });
 
             if (confirmSelectionButton && popup) {
                 confirmSelectionButton.addEventListener('click', (event) => {
                     event.preventDefault();
                     popup.style.display = 'flex';
+                    // Initialize display and logic when popup opens
+                    handlePackageSelectionLogic();
                 });
             }
 
@@ -621,18 +646,38 @@
                     const oldEmail = oldEmailInput.value.trim();
                     const newEmail = newEmailInput.value.trim();
                     let selectedInvestmentValue = '';
-                    const selectedRadio = document.querySelector('input[name="investmentPackage"]:checked');
-                    
-                    if (selectedRadio && selectedRadio.value === '') {
-                        selectedInvestmentValue = customInvestmentInput.value.trim();
-                    } else if (selectedRadio) {
-                        selectedInvestmentValue = selectedRadio.value;
+                    const checkedCheckboxes = document.querySelectorAll('input[name="investmentPackage"]:checked');
+
+                    if (checkedCheckboxes.length === 0) {
+                        alert('Molimo odaberite investicijski paket.');
+                        return;
+                    }
+
+                    let totalSelectedAmount = 0;
+                    let hasCustomSelection = false;
+
+                    checkedCheckboxes.forEach(cb => {
+                        if (cb.value === 'custom') {
+                            hasCustomSelection = true;
+                        } else {
+                            totalSelectedAmount += parseFloat(cb.value) || 0;
+                        }
+                    });
+
+                    if (hasCustomSelection) {
+                        const customAmount = parseFloat(customInvestmentInput.value);
+                        if (isNaN(customAmount) || customAmount < 5000) {
+                            alert('Za "Sedmi investicijski paket" molimo unesite iznos od 5000 € ili više.');
+                            return;
+                        }
+                        selectedInvestmentValue = customAmount.toString();
+                    } else {
+                        selectedInvestmentValue = totalSelectedAmount.toString();
                     }
 
                     const isUsernameValid = username !== '';
                     const isOldEmailValid = oldEmail !== '' && validateEmail(oldEmail);
                     const isNewEmailValid = newEmail === '' || validateEmail(newEmail);
-                    const isInvestmentValid = selectedInvestmentValue !== '';
 
                     // Reset errors
                     usernameInput.classList.remove('input-error');
@@ -648,16 +693,11 @@
                     if (!isOldEmailValid) {
                         oldEmailInput.classList.add('input-error');
                     }
-                    if (oldEmail && !isNewEmailValid) { // Validacija samo ako je unesen novi email
+                    if (newEmail && !isNewEmailValid) { // Validacija samo ako je unesen novi email
                         newEmailInput.classList.add('input-error');
-                    }
-                    if (!isInvestmentValid) {
-                        alert('Molimo odaberite investicijski paket ili unesite iznos.');
-                        return; // Prekini ako nije odabrana investicija
                     }
 
                     if (isUsernameValid && isOldEmailValid && isNewEmailValid) {
-                        // Uspješna validacija, prosljeđivanje podataka ili nastavak
                         console.log("Podaci za potvrdu:", { username, oldEmail, newEmail, selectedInvestmentValue });
                         
                         // Ovdje bi išla logika za spremanje ili prosljeđivanje podataka,
