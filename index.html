@@ -366,7 +366,7 @@
             border: none;
         }
         
-        /* Pomaknuti gornji X izvan okvira videoplayera */
+        /* Novi kontejner za kontrole */
         .video-controls-container {
             position: absolute;
             top: -35px; /* Pomaknuto iznad playera */
@@ -377,8 +377,9 @@
             gap: 10px;
         }
 
+        /* Gumb za zatvaranje videa - pozicioniran unutar .video-controls-container */
         .video-modal-close-button {
-            position: relative; /* Promijenjeno iz absolute u relative za lakše pozicioniranje unutar container-a */
+            position: relative; /* Promijenjeno iz absolute u relative */
             top: auto; /* Maknuto fiksno pozicioniranje */
             right: auto; /* Maknuto fiksno pozicioniranje */
             background: #4A0072; /* Tamnoljubičasta boja */
