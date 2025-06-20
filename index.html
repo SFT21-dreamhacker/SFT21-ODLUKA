@@ -322,7 +322,7 @@
             -webkit-backdrop-filter: blur(8px);
         }
         .video-player-container {
-            position: relative;
+            position: relative; /* Omogućuje apsolutno pozicioniranje unutar ovog elementa */
             width: clamp(300px, 68vw, 950px);
             max-width: 82%;
             aspect-ratio: 16/9;
@@ -368,9 +368,9 @@
         
         /* Gumb za zatvaranje videa */
         .video-modal-close-button {
-            position: absolute; /* Vraćen na absolute */
-            top: 15px; /* Pomaknuto bliže rubu */
-            right: 15px; /* Pomaknuto bliže rubu */
+            position: absolute; /* Apsolutno pozicioniran unutar .video-player-container */
+            top: 15px; /* Pomaknut 15px od gornjeg ruba kontejnera */
+            right: 15px; /* Pomaknut 15px od desnog ruba kontejnera */
             background: #4A0072; /* Tamnoljubičasta boja */
             border: 3px solid #A020F0; /* Ljubičasti obrub */
             border-radius: 50%;
@@ -383,7 +383,7 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            z-index: 25; /* Z-index je sada viši kako bi bio iznad video playera */
+            z-index: 25; /* Viši z-index da bude iznad video playera */
             box-shadow: 0 0 10px rgba(74, 0, 114, 0.7); /* Sjena za isticanje */
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
