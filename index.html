@@ -366,18 +366,21 @@
             border: none;
         }
         
-        .video-glow-border {
-            position: absolute; top: -20px; left: -20px; right: -20px; bottom: -20px; border-radius: 30px;
-            box-shadow: 0 0 30px 10px rgba(138, 43, 226, 0.15), 0 0 50px 20px rgba(160, 32, 240, 0.1), 0 0 70px 30px rgba(180, 80, 250, 0.08);
-            pointer-events: none; z-index: 0; animation: subtleGlowPulse 5s infinite alternate ease-in-out;
-        }
-        @keyframes subtleGlowPulse { from { box-shadow: 0 0 30px 10px rgba(138, 43, 226, 0.15), 0 0 50px 20px rgba(160, 32, 240, 0.1), 0 0 70px 30px rgba(180, 80, 250, 0.08); opacity: 0.8; } to { box-shadow: 0 0 35px 12px rgba(148, 53, 236, 0.2), 0 0 55px 22px rgba(170, 42, 250, 0.12), 0 0 75px 32px rgba(190, 90, 255, 0.1); opacity: 1; } }
-        
-        /* Dodavanje X za zatvaranje videa */
-        .video-modal-close-button {
+        /* Pomaknuti gornji X izvan okvira videoplayera */
+        .video-controls-container {
             position: absolute;
-            top: 15px; /* Pomaknuto bliže rubu */
-            right: 15px; /* Pomaknuto bliže rubu */
+            top: -35px; /* Pomaknuto iznad playera */
+            right: 0px;  /* Poravnato desno */
+            z-index: 20; /* Iznad samog playera */
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .video-modal-close-button {
+            position: relative; /* Promijenjeno iz absolute u relative za lakše pozicioniranje unutar container-a */
+            top: auto; /* Maknuto fiksno pozicioniranje */
+            right: auto; /* Maknuto fiksno pozicioniranje */
             background: #4A0072; /* Tamnoljubičasta boja */
             border: 3px solid #A020F0; /* Ljubičasti obrub */
             border-radius: 50%;
@@ -390,7 +393,6 @@
             align-items: center;
             justify-content: center;
             transition: all 0.3s ease;
-            z-index: 15;
             box-shadow: 0 0 10px rgba(74, 0, 114, 0.7); /* Sjena za isticanje */
             backdrop-filter: blur(5px);
             -webkit-backdrop-filter: blur(5px);
@@ -519,7 +521,10 @@ Bez obzira na odluku koju donesete danas, po završetku spomentutih softvera i a
     <!-- Video Player Modal sa YouTube embed -->
     <div id="videoPlayerModal" class="modal-overlay video-modal-overlay">
         <div class="video-player-container">
-            <button class="video-modal-close-button" id="closeVideoPlayerButton">×</button>
+            <!-- Novi kontejner za kontrole -->
+            <div class="video-controls-container">
+                <button class="video-modal-close-button" id="closeVideoPlayerButton">×</button>
+            </div>
             <div class="video-wrapper">
                 <iframe id="presentationVideo" 
                         src="https://www.youtube-nocookie.com/embed/xDZNaDX58jg?si=z8Py1S8jPw7JpXoU&rel=0&modestbranding=1" 
