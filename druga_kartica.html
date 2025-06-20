@@ -153,7 +153,7 @@
             top: 0;
             width: 100%;
             height: 100%;
-            overflow: auto;
+            overflow: auto; /* Omogućuje skrolanje samog modalnog prozora */
             background-color: rgba(0,0,0,0.6);
             justify-content: center;
             align-items: center;
@@ -170,6 +170,10 @@
             position: relative;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             animation: fadeIn 0.3s;
+            display: flex; /* Za flex layout unutar modala */
+            flex-direction: column; /* Postavi sadržaj u kolonu */
+            max-height: calc(100vh - 40px); /* Ograniči maksimalnu visinu popupa */
+            overflow-y: auto; /* Omogući skrolanje unutar popupa ako je sadržaj prevelik */
         }
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.95); }
@@ -183,6 +187,7 @@
             font-size: 32px;
             font-weight: bold;
             cursor: pointer;
+            z-index: 10; /* Da bude iznad ostalih sadržaja */
         }
         .modal-close-button:hover,
         .modal-close-button:focus {
@@ -547,33 +552,41 @@
             const MAX_INVESTMENT_THRESHOLD = 5000;
 
             function updateTotalInvestmentDisplay() {
-                currentSelectedAmount = 0;
+                let totalAmount = 0;
+                let hasCustomSelection = false;
                 let customAmountEntered = false;
 
                 document.querySelectorAll('input[name="investmentPackage"]:checked').forEach(checkbox => {
                     if (checkbox.value === 'custom') {
-                        customAmountEntered = true;
+                        hasCustomSelection = true;
+                        const customAmount = parseFloat(customInvestmentInput.value) || 0;
+                        totalAmount = Math.max(totalAmount, customAmount);
                     } else {
-                        currentSelectedAmount += parseFloat(checkbox.value) || 0;
+                        totalAmount += parseFloat(checkbox.value) || 0;
                     }
                 });
 
-                if (customAmountEntered) {
+                if (hasCustomSelection) {
                     const customAmount = parseFloat(customInvestmentInput.value) || 0;
-                    currentSelectedAmount = Math.max(currentSelectedAmount, customAmount);
-                }
-
-                if (currentSelectedAmount > 0) {
-                    totalInvestmentDisplay.textContent = `${currentSelectedAmount} €`;
+                    // If only custom is selected, use its value. If custom + others, use max.
+                    if (document.querySelector('input[name="investmentPackage"][value="custom"]').checked) {
+                         totalAmount = Math.max(totalAmount, customAmount);
+                    }
+                    // Ensure custom amount is displayed if IP7 is selected, even if others are not
+                    if (document.querySelector('input[name="investmentPackage"][value="custom"]').checked) {
+                        totalInvestmentDisplay.textContent = `${customAmount} €`;
+                    } else {
+                         totalInvestmentDisplay.textContent = totalAmount > 0 ? `${totalAmount} €` : '';
+                    }
                 } else {
-                    totalInvestmentDisplay.textContent = '';
+                    totalInvestmentDisplay.textContent = totalAmount > 0 ? `${totalAmount} €` : '';
                 }
             }
             
             function handlePackageSelectionLogic() {
                 let totalAmount = 0;
                 let hasCustomSelection = false;
-                let customAmount = 0;
+                let customAmountValue = 0;
 
                 document.querySelectorAll('input[name="investmentPackage"]:checked').forEach(checkbox => {
                     if (checkbox.value === 'custom') {
@@ -583,42 +596,50 @@
                     }
                 });
 
+                // Handle custom amount input visibility and validation
                 if (hasCustomSelection) {
-                    customAmount = parseFloat(customInvestmentInput.value) || 0;
-                    totalAmount = Math.max(totalAmount, customAmount);
+                    customInvestmentInput.style.display = 'block';
+                    customInvestmentInput.focus();
+                } else {
+                    customInvestmentInput.style.display = 'none';
+                    customInvestmentInput.value = ''; // Clear custom input if not selected
+                    oldEmailError.textContent = ''; // Clear associated errors
+                    newEmailError.textContent = '';
+                    oldEmailInput.classList.remove('input-error');
+                    newEmailInput.classList.remove('input-error');
+                }
+
+                // Apply the 5000€ threshold logic
+                if (hasCustomSelection) {
+                    customAmountValue = parseFloat(customInvestmentInput.value) || 0;
+                    // If custom is selected, the total amount is at least the custom amount
+                    // If other packages are also selected, it's the max of sum or custom amount
+                    totalAmount = Math.max(totalAmount, customAmountValue);
                 }
 
                 if (totalAmount > MAX_INVESTMENT_THRESHOLD) {
-                    // Uncheck all other packages and check IP7
+                    // Uncheck all other packages
                     investmentPackageCheckboxes.forEach(cb => {
-                        cb.checked = false;
-                        cb.disabled = false; // Re-enable others if needed
+                        if (cb.value !== 'custom') {
+                            cb.checked = false;
+                        }
                     });
+                    // Ensure IP7 is checked and custom amount is set correctly
                     const ip7Checkbox = document.querySelector('input[name="investmentPackage"][value="custom"]');
                     if (ip7Checkbox) {
                         ip7Checkbox.checked = true;
                         customInvestmentInput.value = Math.max(totalAmount, 5000).toString(); // Ensure minimum 5000
                         customInvestmentInput.style.display = 'block';
-                        updateTotalInvestmentDisplay();
-                    }
-                } else {
-                    // Enable/disable custom input based on IP7 selection
-                    const ip7Checkbox = document.querySelector('input[name="investmentPackage"][value="custom"]');
-                    if (ip7Checkbox) {
-                        customInvestmentInput.style.display = ip7Checkbox.checked ? 'block' : 'none';
-                        if (!ip7Checkbox.checked) {
-                            customInvestmentInput.value = ''; // Clear custom input if IP7 is unchecked
-                        }
                     }
                 }
-                updateTotalInvestmentDisplay(); // Update display after logic
+                
+                updateTotalInvestmentDisplay(); // Update the displayed total after logic
             }
 
             oldEmailInput.addEventListener('blur', () => handleValidation(oldEmailInput, oldEmailError));
             newEmailInput.addEventListener('blur', () => handleValidation(newEmailInput, newEmailError));
             customInvestmentInput.addEventListener('input', () => {
                 handlePackageSelectionLogic(); // Re-evaluate if custom input changes
-                updateTotalInvestmentDisplay();
             });
 
             investmentPackageCheckboxes.forEach(checkbox => {
@@ -629,8 +650,7 @@
                 confirmSelectionButton.addEventListener('click', (event) => {
                     event.preventDefault();
                     popup.style.display = 'flex';
-                    // Initialize display and logic when popup opens
-                    handlePackageSelectionLogic();
+                    handlePackageSelectionLogic(); // Initialize logic when popup opens
                 });
             }
 
