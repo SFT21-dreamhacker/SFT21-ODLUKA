@@ -5,7 +5,726 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SFT21 - Odluka o nastavku poslovanja uz ulaganje</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="<!DOCTYPE html>
+<html lang="hr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SFT21 - Odluka o nastavku poslovanja uz ulaganje</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arial&family=Roboto&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .header-banner {
+            background-color: #6A0DAD;
+            color: #FFFF00;
+            width: 100%;
+            padding: 15px 0;
+            text-align: center;
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: relative;
+        }
+        .close-button {
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            color: #FFFFFF;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .close-button:hover {
+            color: #f0f0f0;
+        }
+        .content-wrapper {
+            background-color: #FFFFFF;
+            width: 100%;
+            max-width: 900px;
+            margin: 20px;
+            padding: clamp(15px, 3vw, 30px);
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            font-size: clamp(0.9rem, 1.8vw, 1.1rem);
+            line-height: 1.6;
+            padding-bottom: clamp(15px, 3vw, 30px);
+        }
+        h2 {
+            color: #D6336C;
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+        }
+        p {
+            margin-bottom: 1em;
+            color: #4A0072;
+        }
+        strong, b {
+            color: #3B005A;
+        }
+        .highlight-red {
+            color: #D6336C;
+            font-weight: bold;
+        }
+        .sf-bodovi-star {
+            color: #6A0DAD;
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-right: 5px;
+        }
+        .main-greeting {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: clamp(1rem, 2vw, 1.3rem);
+        }
+        .info-block {
+            margin-bottom: 15px;
+        }
+        .info-block p {
+             margin-bottom: 0.5em;
+        }
+        .decision-text {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .user-requested-style-center-red {
+            text-align: center !important;
+            color: red !important;
+        }
+        .user-requested-style-center-red strong,
+        .user-requested-style-center-red b {
+            color: red !important;
+        }
+        .user-requested-style-justify {
+            text-align: justify !important;
+        }
+        #confirmSelectionButton {
+            margin: 20px auto;
+            display: block;
+            max-width: fit-content;
+            padding: 1.2rem 2.5rem;
+            border-radius: 0.5rem;
+            font-weight: bold;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 1.3rem;
+            white-space: nowrap;
+            background-color: #C20000;
+            color: #FFFFFF;
+            border: 1px solid transparent;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2), 0 0 20px rgba(194, 0, 0, 0.3);
+        }
+        #confirmSelectionButton:hover {
+            background-color: #9C0000;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3), 0 0 30px rgba(194, 0, 0, 0.5);
+        }
+        @media (max-width: 600px) {
+            #confirmSelectionButton {
+                padding: 1rem 2rem;
+                font-size: 1.1rem;
+            }
+        }
+
+        /* NOVI STILOVI ZA POPUP/MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto; /* Omogućuje skrolanje samog modalnog prozora */
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            color: #333;
+            padding: 30px;
+            border: 1px solid #888;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            animation: fadeIn 0.3s;
+            display: flex; /* Za flex layout unutar modala */
+            flex-direction: column; /* Postavi sadržaj u kolonu */
+            max-height: calc(100vh - 40px); /* Ograniči maksimalnu visinu popupa */
+            overflow-y: auto; /* Omogući skrolanje unutar popupa ako je sadržaj prevelik */
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        .modal-close-button {
+            color: #aaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 10; /* Da bude iznad ostalih sadržaja */
+        }
+        .modal-close-button:hover,
+        .modal-close-button:focus {
+            color: #000;
+            text-decoration: none;
+        }
+        .modal-content h2 {
+            color: #6A0DAD;
+            text-align: left;
+            margin-top: 20px;
+            margin-bottom: 5px;
+            font-size: 1.2rem;
+        }
+        .modal-content h2:first-of-type {
+            margin-top: 0;
+        }
+        .modal-content input[type="text"],
+        .modal-content input[type="email"],
+        .modal-content input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        .modal-content .email-subtitle {
+            margin-top: 5px;
+            margin-bottom: 10px;
+            font-size: 0.9rem;
+            color: #555;
+            text-align: left;
+        }
+        .modal-content .napomena {
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            color: #444;
+            text-align: left;
+        }
+        .modal-content .napomena p {
+            color: #444;
+            margin-top: 5px;
+            margin-bottom: 0;
+            text-align: justify;
+        }
+        .modal-content .napomena strong {
+             color: #333;
+        }
+        .error-message {
+            color: red;
+            font-size: 0.8rem;
+            height: 1.2em;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        .input-error {
+            border-color: red !important;
+            box-shadow: 0 0 5px rgba(255,0,0,0.5);
+        }
+        .modal-confirm-button {
+            display: block;
+            margin: 25px auto 0;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #FFFFFF;
+            background-color: #007BFF;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .modal-confirm-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        /* Stilovi za odabir paketa */
+        .investment-options {
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        .investment-options legend {
+            font-weight: bold;
+            color: #6A0DAD;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            padding: 0 5px;
+        }
+        .investment-option {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .investment-option label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #4A0072;
+        }
+        .investment-option input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #6A0DAD;
+            border-radius: 4px;
+            outline: none;
+            cursor: pointer;
+            position: relative;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+            margin-right: 0;
+        }
+        .investment-option input[type="checkbox"]:checked {
+            border-color: #4A0072;
+            background-color: #6A0DAD;
+        }
+        .investment-option input[type="checkbox"]:checked::after {
+            content: '✔'; /* Kvačica */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            font-size: 12px;
+            color: white;
+            transform: translate(-50%, -50%);
+        }
+        .investment-amount-input {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+            font-size: 0.95rem;
+        }
+        .investment-amount-input input[type="number"] {
+            max-width: 120px;
+            margin-bottom: 0;
+        }
+        .investment-amount-input .currency-symbol {
+            font-weight: bold;
+            color: #3B005A;
+        }
+        .total-investment-info {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #3B005A;
+        }
+    </style>
+</head>
+<body>
+    <div class="header-banner">
+        SFT21 – Odluka o nastavku poslovanja
+        <button class="close-button" id="closePageButton" title="Zatvori">X</button>
+    </div>
+
+    <div class="content-wrapper">
+        <p class="main-greeting">ČESTITAMO I ZAHVALJUJEMO VAM SE NA ODLUCI DA NAM SE PRIDRUŽITE U NASTAVKU POSLOVANJA SUKLADNO PRAVILIMA NOVOG POSLOVNOG SISTEMA</p>
+        <div class="info-block">
+            <p class="user-requested-style-center-red">S obzirom na promjene u načinu poslovanja i raspodjeli sredstava, <br>Franšizni ugovor kojega ste prethodno potpisali prestaje važiti.</p>
+            <p class="user-requested-style-center-red">Novi Franšizni ugovor potpisujete nakon aktivacije novog Startnog paketa.</p>
+        </div>
+        <p class="decision-text user-requested-style-center-red" id="dynamicDecisionText">
+            S obzirom da ste u starom sistemu započeli poslovanje sa <strong id="dynamicStartPackageInfo">30 $</strong> te kako ste odlučili da;
+        </p>
+        <h2 class="highlight-red user-requested-style-center-red">↪ ŽELITE nastaviti kao PASIVAN član – SFinvestitor,</h2>
+        <p id="dynamicInvestmentReductionInfo" class="highlight-red user-requested-style-center-red">Iznos Investicijskog paketa umanjuje vam se za 30 €.</p>
+        <p id="dynamicContinuationInfo" class="user-requested-style-justify">Poslovanje nastavljate kao <strong>PASIVAN</strong> član – <strong>SFinvestitor</strong>, otvaranjem <strong>investicijskog korisničkog računa</strong>, koji će kod prvog popunjavanja pozicija u SFalgoritmu zauzeti poziciju sukladno broju vaših <strong>osobnih</strong> odnosno <strong>grupnih SFbodova</strong> iz starog sistema.</p>
+        <p id="dynamicPaymentSFbInfoContainer" class="user-requested-style-justify">Na osnovi uplate <strong class="dynamic-old-system-payment-amount">30 $</strong> za Startni paket iz starog sistema dobivate <strong class="dynamic-old-system-sf-points">60</strong> osobnih SFbodova koji vam se prenose u novi sistem plus osobni bodovi koje dobivate ulaganjem u Investicijski paket, s time da za svaki <strong>1 <span class="dynamic-investment-currency">€</span> investicije dobivate 2 SFb</strong>.</p>
+        <p class="user-requested-style-justify"><span class="sf-bodovi-star">❖</span> <strong>Grupne SFbodove</strong> dobivate tako što će se Vašem broju osobnih SFbodova pridodati zbroj osobnih bodova vaših direktnih i indirektnih članova, koji isto tako nastavljaju poslovanje. Sukladno tome, vašem broju SFbodova dodaje se 50% ukupnog zbroja osobnih SFbodova vaših direktnih članova i 25% ukupnog zbroja osobnih SFbodova njihovih direktnih članova (vaši indirektni članovi). Ukoliko ste u starom sistemu ostvarili nadogradnju računa, ostvarena zarada iz rezervnog novčanika pridodaje se vašem broju SFbodova, na način da za svaki 1 SFC dobivate 1 SFb. Ako ste imali određeni iznos SFC u novčaniku taj vam se iznos također ubraja u broj vaših SFbodova, s time da za svaki 1 SFC dobivate 2 SFb.</p>
+        <p class="user-requested-style-justify" id="dynamicEarningsInfo"><span class="sf-bodovi-star">❖</span> <strong>Zaradu</strong> ostvarujete sukladno pravilima <strong>Investicijskog ugovora</strong>, bez ikakvih radnih obaveza prema kompaniji, uz mogućnost da vlastitom odlukom kada poželite nadogradite svoj korisnički račun uplatom odabranog startnog paketa (SFinvestitor/starter ili SFinvestitor/franšizer) čime stičete mogućnost ostvarivanja dodatne zarade sukladno pravilima Franšiznog ugovora.</p>
+        <button id="confirmSelectionButton">POTVRDI ODABIR</button>
+    </div>
+
+    <!-- HTML STRUKTURA ZA POPUP -->
+    <div id="confirmationPopup" class="modal-overlay">
+        <div class="modal-content">
+            <span id="closePopupButton" class="modal-close-button" title="Zatvori i vrati se na odabir">×</span>
+            <h2>UPIŠI KORISNIČKO IME</h2>
+            <input type="text" id="usernameInput" maxlength="21" placeholder="Vaše korisničko ime iz starog sistema">
+            <h2>UPIŠI EMAIL ADRESU</h2>
+            <p class="email-subtitle">(sa kojom ste se registrirali u starom sistemu)</p>
+            <input type="email" id="oldEmailInput" placeholder="Stara email adresa">
+            <div id="oldEmailError" class="error-message"></div>
+            <p class="email-subtitle">Ukoliko više ne koristite istu adresu ili joj nemate pristup upišite novu email adresu.</p>
+            <input type="email" id="newEmailInput" placeholder="Nova email adresa (opcionalno)">
+            <div id="newEmailError" class="error-message"></div>
+            
+            <fieldset class="investment-options">
+                <legend>IZABERI INVESTICIJSKI PAKET (ILI VIŠE NJIH) ODNOSNO IZNOS ULAGANJA</legend>
+                <div class="investment-option">
+                    <label>
+                        <input type="checkbox" name="investmentPackage" value="100">
+                        Prvi investicijski paket (IP1): 100 €
+                    </label>
+                </div>
+                <div class="investment-option">
+                    <label>
+                        <input type="checkbox" name="investmentPackage" value="200">
+                        Drugi investicijski paket (IP2): 200 €
+                    </label>
+                </div>
+                <div class="investment-option">
+                    <label>
+                        <input type="checkbox" name="investmentPackage" value="500">
+                        Treći investicijski paket (IP3): 500 €
+                    </label>
+                </div>
+                <div class="investment-option">
+                    <label>
+                        <input type="checkbox" name="investmentPackage" value="1000">
+                        Četvrti investicijski paket (IP4): 1000 €
+                    </label>
+                </div>
+                <div class="investment-option">
+                    <label>
+                        <input type="checkbox" name="investmentPackage" value="1500">
+                        Peti investicijski paket (IP5): 1500 €
+                    </label>
+                </div>
+                <div class="investment-option">
+                    <label>
+                        <input type="checkbox" name="investmentPackage" value="2100">
+                        Šesti investicijski paket (IP6): 2100 €
+                    </label>
+                </div>
+                <div class="investment-option">
+                    <label>
+                        <input type="checkbox" name="investmentPackage" value="custom">
+                        Sedmi investicijski paket (IP7): 5000 € ili više
+                    </label>
+                    <input type="number" id="customInvestmentAmount" placeholder="Unesite iznos" style="display: none; max-width: 120px;">
+                </div>
+            </fieldset>
+
+            <div class="total-investment-info">
+                Ukupno namjeravam uložiti: <span id="displayTotalInvestment"></span>
+            </div>
+
+            <div class="napomena">
+                <strong>Napomena:</strong>
+                <p>Po završetku webstranice o Investicijskim paketima biti ćete obaviješteni kako bi pristupili istoj, putem koje ćete izvršiti uplatu odabranog Investicijskog paketa odnosno iznosa kojega želite uložiti uz potpisivanje Ugovora o ulaganju.</p>
+                <p>Sa prvim popunjavanjem SFalgoritma započeti će nastavak poslovanja o čemu ćete biti pravovremeno obaviješteni putem email adrese.</p>
+            </div>
+            <button id="popupConfirmButton" class="modal-confirm-button">Potvrdi</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- DINAMIČKO POSTAVLJANJE TEKSTA NA GLAVNOJ STRANICI ---
+            const urlParams = new URLSearchParams(window.location.search);
+            const paramIznos = urlParams.get('iznos');
+            const paramValuta = urlParams.get('valuta');
+
+            const startPackageInfoSpan = document.getElementById('dynamicStartPackageInfo');
+            const decisionTextParagraph = document.getElementById('dynamicDecisionText');
+            const investmentReductionInfoParagraph = document.getElementById('dynamicInvestmentReductionInfo');
+            const continuationInfoParagraph = document.getElementById('dynamicContinuationInfo');
+            const paymentSFbInfoContainerParagraph = document.getElementById('dynamicPaymentSFbInfoContainer');
+            const earningsInfoParagraph = document.getElementById('dynamicEarningsInfo');
+            
+            const defaultDecisionTextStart = "S obzirom da ste u starom sistemu započeli poslovanje sa ";
+            const defaultDecisionTextEnd = " te kako ste odlučili da;";
+            const defaultStartPackageDisplay = "30 $";
+            const defaultInvestmentReductionText = "Iznos Investicijskog paketa umanjuje vam se za 30 €.";
+            const defaultContinuationText = `Poslovanje nastavljate kao <strong>PASIVAN</strong> član – <strong>SFinvestitor</strong>, otvaranjem <strong>investicijskog korisničkog računa</strong>, koji će kod prvog popunjavanja pozicija u SFalgoritmu zauzeti poziciju sukladno broju vaših <strong>osobnih</strong> odnosno <strong>grupnih SFbodova</strong> iz starog sistema.`;
+            const defaultPaymentSFbText = `Na osnovi uplate <strong>30 $</strong> za Startni paket iz starog sistema dobivate <strong>60</strong> osobnih SFbodova koji vam se prenose u novi sistem plus osobni bodovi koje dobivate ulaganjem u Investicijski paket, s time da za svaki <strong>1 € investicije dobivate 2 SFb</strong>.`;
+            const defaultEarningsText = `<span class="sf-bodovi-star">❖</span> <strong>Zaradu</strong> ostvarujete sukladno pravilima <strong>Investicijskog ugovora</strong>, bez ikakvih radnih obaveza prema kompaniji, uz mogućnost da vlastitom odlukom kada poželite nadogradite svoj korisnički račun uplatom odabranog startnog paketa (SFinvestitor/starter ili SFinvestitor/franšizer) čime stičete mogućnost ostvarivanja dodatne zarade sukladno pravilima Franšiznog ugovora.`;
+
+            if (startPackageInfoSpan) startPackageInfoSpan.textContent = defaultStartPackageDisplay;
+            else if (decisionTextParagraph) decisionTextParagraph.innerHTML = `${defaultDecisionTextStart}<strong>${defaultStartPackageDisplay}</strong>${defaultDecisionTextEnd}`;
+            if (investmentReductionInfoParagraph) investmentReductionInfoParagraph.textContent = defaultInvestmentReductionText;
+            if (continuationInfoParagraph) continuationInfoParagraph.innerHTML = defaultContinuationText;
+            if (paymentSFbInfoContainerParagraph) paymentSFbInfoContainerParagraph.innerHTML = defaultPaymentSFbText;
+            if (earningsInfoParagraph) earningsInfoParagraph.innerHTML = defaultEarningsText;
+
+            if (paramIznos && paramValuta) {
+                const numericIznos = parseFloat(paramIznos);
+                let currentDisplayText = "";
+                let currentReductionText = "";
+                let investmentCurrencySymbol = "€"; // Defaultna valuta
+                let sfBodovi = 0;
+
+                // Standardizacija valute
+                let standardValuta = paramValuta.toLowerCase();
+                if (standardValuta === '$') standardValuta = 'usd';
+
+                if (!isNaN(numericIznos)) {
+                    if (standardValuta === 'usd') {
+                        currentDisplayText = `${paramIznos} $`;
+                        investmentCurrencySymbol = "$";
+                        sfBodovi = numericIznos * 2;
+                        currentReductionText = `Iznos Investicijskog paketa umanjuje vam se za ${paramIznos} $.`;
+                    } else if (standardValuta === 'eur') {
+                        currentDisplayText = `${paramIznos} €`;
+                        investmentCurrencySymbol = "€";
+                        sfBodovi = numericIznos * 2;
+                        currentReductionText = `Iznos Investicijskog paketa umanjuje vam se za ${paramIznos} €.`;
+                    } else {
+                        currentDisplayText = `${paramIznos} ${paramValuta}`;
+                        investmentCurrencySymbol = paramValuta;
+                        currentReductionText = `Iznos Investicijskog paketa umanjuje vam se za ${paramIznos} ${paramValuta}.`;
+                        sfBodovi = numericIznos * 2;
+                    }
+
+                    if (startPackageInfoSpan) {
+                        startPackageInfoSpan.textContent = currentDisplayText;
+                    } else if (decisionTextParagraph) {
+                         decisionTextParagraph.innerHTML = `${defaultDecisionTextStart}<strong>${currentDisplayText}</strong>${defaultDecisionTextEnd}`;
+                    }
+                    if (investmentReductionInfoParagraph) {
+                        investmentReductionInfoParagraph.textContent = currentReductionText;
+                    }
+                    if (paymentSFbInfoContainerParagraph) {
+                        paymentSFbInfoContainerParagraph.innerHTML = `Na osnovi uplate <strong>${currentDisplayText}</strong> za Startni paket iz starog sistema dobivate <strong>${sfBodovi} osobnih SFbodova</strong> koji vam se prenose u novi sistem plus osobni bodovi koje dobivate ulaganjem u Investicijski paket, s time da za svaki <strong>1 ${investmentCurrencySymbol} investicije dobivate 2 SFb</strong>.`;
+                    }
+                }
+            }
+
+            // --- ZATVARANJE STRANICE ---
+            const closeButton = document.getElementById('closePageButton');
+            if (closeButton) {
+                closeButton.addEventListener('click', () => {
+                    let targetUrl = 'prikaz_opcije.html';
+                    const finalIznos = paramIznos || '30';
+                    const finalValuta = paramValuta || 'usd';
+                    targetUrl += `?iznos=${encodeURIComponent(finalIznos)}&valuta=${encodeURIComponent(finalValuta)}`;
+                    window.location.href = targetUrl;
+                });
+            }
+
+            // --- UPRAVLJANJE POPUP-om ---
+            const confirmSelectionButton = document.getElementById('confirmSelectionButton');
+            const popup = document.getElementById('confirmationPopup');
+            const closePopupButton = document.getElementById('closePopupButton');
+            
+            const usernameInput = document.getElementById('usernameInput');
+            const oldEmailInput = document.getElementById('oldEmailInput');
+            const oldEmailError = document.getElementById('oldEmailError');
+            const newEmailInput = document.getElementById('newEmailInput');
+            const newEmailError = document.getElementById('newEmailError');
+            const customInvestmentInput = document.getElementById('customInvestmentAmount');
+            const totalInvestmentDisplay = document.getElementById('displayTotalInvestment');
+
+            const investmentPackageCheckboxes = document.querySelectorAll('input[name="investmentPackage"]');
+
+            function updateTotalInvestmentDisplay() {
+                let totalAmount = 0;
+                let hasCustomSelection = false;
+
+                document.querySelectorAll('input[name="investmentPackage"]:checked').forEach(checkbox => {
+                    if (checkbox.value === 'custom') {
+                        hasCustomSelection = true;
+                    } else {
+                        totalAmount += parseFloat(checkbox.value) || 0;
+                    }
+                });
+
+                if (hasCustomSelection) {
+                    const customAmount = parseFloat(customInvestmentInput.value) || 0;
+                    totalAmount = Math.max(totalAmount, customAmount);
+                }
+
+                if (totalAmount > 0) {
+                    totalInvestmentDisplay.textContent = `${totalAmount} €`;
+                } else {
+                    totalInvestmentDisplay.textContent = '';
+                }
+            }
+            
+            function handlePackageSelectionLogic() {
+                let totalAmount = 0;
+                let hasCustomSelection = false;
+                let customAmountValue = 0;
+
+                document.querySelectorAll('input[name="investmentPackage"]:checked').forEach(checkbox => {
+                    if (checkbox.value === 'custom') {
+                        hasCustomSelection = true;
+                    } else {
+                        totalAmount += parseFloat(checkbox.value) || 0;
+                    }
+                });
+
+                // Handle custom amount input visibility
+                const ip7Checkbox = document.querySelector('input[name="investmentPackage"][value="custom"]');
+                if (ip7Checkbox) {
+                    customInvestmentInput.style.display = ip7Checkbox.checked ? 'block' : 'none';
+                    if (!ip7Checkbox.checked) {
+                        customInvestmentInput.value = ''; // Clear custom input if not selected
+                        // Clear errors and input styling if IP7 is unchecked
+                        oldEmailError.textContent = '';
+                        newEmailError.textContent = '';
+                        oldEmailInput.classList.remove('input-error');
+                        newEmailInput.classList.remove('input-error');
+                    }
+                }
+
+                // Apply the 5000€ threshold logic
+                if (hasCustomSelection) {
+                    customAmountValue = parseFloat(customInvestmentInput.value) || 0;
+                    totalAmount = Math.max(totalAmount, customAmountValue);
+                }
+
+                if (totalAmount > MAX_INVESTMENT_THRESHOLD) {
+                    // Uncheck all other packages
+                    investmentPackageCheckboxes.forEach(cb => {
+                        if (cb.value !== 'custom') {
+                            cb.checked = false;
+                        }
+                    });
+                    // Ensure IP7 is checked and custom amount is set correctly
+                    if (ip7Checkbox) {
+                        ip7Checkbox.checked = true;
+                        customInvestmentInput.value = Math.max(totalAmount, 5000).toString(); // Ensure minimum 5000
+                        customInvestmentInput.style.display = 'block'; // Ensure it's visible
+                    }
+                }
+                
+                updateTotalInvestmentDisplay(); // Update the displayed total after logic
+            }
+
+            oldEmailInput.addEventListener('blur', () => handleValidation(oldEmailInput, oldEmailError));
+            newEmailInput.addEventListener('blur', () => handleValidation(newEmailInput, newEmailError));
+            customInvestmentInput.addEventListener('input', () => {
+                handlePackageSelectionLogic(); // Re-evaluate if custom input changes
+            });
+
+            investmentPackageCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', handlePackageSelectionLogic);
+            });
+
+            if (confirmSelectionButton && popup) {
+                confirmSelectionButton.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    popup.style.display = 'flex';
+                    handlePackageSelectionLogic(); // Initialize logic when popup opens
+                });
+            }
+
+            if (closePopupButton) {
+                closePopupButton.addEventListener('click', () => {
+                    // Redirect back to the previous page (odluka.html)
+                    let targetUrl = 'odluka.html';
+                    const finalIznos = paramIznos || '30';
+                    const finalValuta = paramValuta || 'usd';
+                    targetUrl += `?iznos=${encodeURIComponent(finalIznos)}&valuta=${encodeURIComponent(finalValuta)}`;
+                    window.location.href = targetUrl;
+                });
+            }
+            
+            if (popupConfirmButton) {
+                popupConfirmButton.addEventListener('click', () => {
+                    const username = usernameInput.value.trim();
+                    const oldEmail = oldEmailInput.value.trim();
+                    const newEmail = newEmailInput.value.trim();
+                    let selectedInvestmentValue = '';
+                    const checkedCheckboxes = document.querySelectorAll('input[name="investmentPackage"]:checked');
+
+                    if (checkedCheckboxes.length === 0) {
+                        alert('Molimo odaberite investicijski paket.');
+                        return;
+                    }
+
+                    let totalSelectedAmount = 0;
+                    let hasCustomSelection = false;
+
+                    checkedCheckboxes.forEach(cb => {
+                        if (cb.value === 'custom') {
+                            hasCustomSelection = true;
+                        } else {
+                            totalSelectedAmount += parseFloat(cb.value) || 0;
+                        }
+                    });
+
+                    if (hasCustomSelection) {
+                        const customAmount = parseFloat(customInvestmentInput.value);
+                        if (isNaN(customAmount) || customAmount < 5000) {
+                            alert('Za "Sedmi investicijski paket" molimo unesite iznos od 5000 € ili više.');
+                            return;
+                        }
+                        selectedInvestmentValue = customAmount.toString();
+                    } else {
+                        selectedInvestmentValue = totalSelectedAmount.toString();
+                    }
+
+                    const isUsernameValid = username !== '';
+                    const isOldEmailValid = oldEmail !== '' && validateEmail(oldEmail);
+                    const isNewEmailValid = newEmail === '' || validateEmail(newEmail);
+
+                    // Reset errors
+                    usernameInput.classList.remove('input-error');
+                    oldEmailInput.classList.remove('input-error');
+                    newEmailInput.classList.remove('input-error');
+                    oldEmailError.textContent = '';
+                    newEmailError.textContent = '';
+
+                    // Validation
+                    if (!isUsernameValid) {
+                        usernameInput.classList.add('input-error');
+                    }
+                    if (!isOldEmailValid) {
+                        oldEmailInput.classList.add('input-error');
+                    }
+                    if (newEmail && !isNewEmailValid) { // Validacija samo ako je unesen novi email
+                        newEmailInput.classList.add('input-error');
+                    }
+
+                    if (isUsernameValid && isOldEmailValid && isNewEmailValid) {
+                        console.log("Podaci za potvrdu:", { username, oldEmail, newEmail, selectedInvestmentValue });
+                        
+                        // Ovdje bi išla logika za spremanje ili prosljeđivanje podataka,
+                        // za sada samo navigacija nazad
+                        window.location.href = 'odluka.html';
+                    } else {
+                        alert('Molimo ispravno ispunite označena polja.');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Arial&family=Roboto&display=swap" rel="stylesheet">
     <style>
         body {
